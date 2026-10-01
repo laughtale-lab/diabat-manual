@@ -1,0 +1,31 @@
+\documentclass[12pt,openany]{book}
+\input{config/edition-public}
+\input{config/metadata}
+\input{preamble/packages}
+\input{preamble/listings}
+\input{preamble/commands}
+\input{preamble/layout}
+\begin{document}
+\frontmatter
+\input{frontmatter/titlepage}
+\pagestyle{plain}
+\input{frontmatter/cite}
+\input{frontmatter/links}
+\input{frontmatter/toc}
+% The book class inserts a verso page before the first chapter when necessary.
+% Keep that leaf unnumbered and without the provisional Chapter 0 running head.
+\pagestyle{empty}
+\mainmatter
+\pagestyle{fancy}
+\include{chapters/introduction/introduction}
+\include{chapters/getting-started/getting-started}
+\include{chapters/interfaces/interfaces}
+\include{chapters/diabat/diabat}
+\include{chapters/postorb/postorb}
+\include{chapters/postwfn/postwfn}
+\include{chapters/tutorials/tutorials}
+\input{appendices/appendices}
+\clearpage
+\fancyhead[L]{\nouppercase{\leftmark}}
+\printbibliography[heading=bibintoc,title={References}]
+\end{document}
