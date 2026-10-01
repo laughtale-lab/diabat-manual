@@ -1,0 +1,40 @@
+# TeX engines / latexmk / BibLaTeX: never sync generated compilation files.
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.dvi
+*.ps
+*.bak
+*.swp
+*~
+
+# Only the generated root-level PDF is excluded. Source PDFs, if ever
+# intentionally included in the Manual, should remain trackable.
+/main.pdf
+/main-public.pdf
+/diabat.pdf
+
+# Deployment products are always rebuilt from LaTeX sources.
+/site/
+/build/
+/web/generated/
+/web/book/
+/.cache/
+__pycache__/
+.pytest_cache/
+.DS_Store
