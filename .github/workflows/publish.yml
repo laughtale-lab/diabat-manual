@@ -1,0 +1,110 @@
+name: Build and publish the Diabat Manual
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile and validate the PDF
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout manual LaTeX sources
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Uses the same script as local compilation, inside a fixed TeX Live image.
+      # This action intentionally installs NO converter or mdBook in phase 1.
+      - name: Compile with pdfLaTeX, Biber and latexmk
+        uses: xu-cheng/texlive-action@v3
+        with:
+          texlive_version: '2025'
+          os: debian
+          run: bash tools/build-pdf.sh
+
+      - name: Ensure PDF validation dependencies are present
+        shell: bash
+        run: |
+          if ! command -v pdfinfo >/dev/null || ! command -v pdftotext >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y poppler-utils
+          fi
+
+      - name: Validate the compiled PDF
+        run: python3 tools/validate-pdf.py main.pdf --min-pages 100
+
+      - name: Test publishing scripts
+        run: python3 -m unittest discover -s tests -v
+
+      # All deployment inputs must come from this successful build.
+      # In phase 3, build Markdown + mdBook here before staging the site;
+      # switch SITE_SOURCE only after both have passed their checks.
+      - name: Stage one complete PDF + website release
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          SITE_SOURCE: web/landing
+          SITE_MODE: pdf-landing
+        run: |
+          bash tools/stage-pages.sh
+          python3 tools/validate-site.py site main.pdf
+
+      - name: Configure Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload the *complete* Pages release
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+          include-hidden-files: true
+
+  deploy:
+    name: Atomically deploy the verified release
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: diabat-manual-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # A slow earlier run must not overwrite a newer manual release.
+      # The freshness check happens AFTER the deploy concurrency lock.
+      - name: Check that this is still the latest main commit
+        id: freshness
+        shell: bash
+        env:
+          TARGET_SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          latest="$(git ls-remote "https://github.com/${REPO}.git" refs/heads/main | cut -f1)"
+          if [[ -z "$latest" ]]; then
+            echo 'Could not query the latest main commit.' >&2
+            exit 1
+          fi
+          if [[ "$latest" == "$TARGET_SHA" ]]; then
+            echo 'publish=true' >> "$GITHUB_OUTPUT"
+          else
+            echo "Skipping stale build: ${TARGET_SHA}; latest main: ${latest}"
+            echo 'publish=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy PDF and website together
+        if: steps.freshness.outputs.publish == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
