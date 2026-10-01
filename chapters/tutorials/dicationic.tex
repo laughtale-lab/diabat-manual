@@ -1,0 +1,12 @@
+\section{Dicationic Thianthrene Trimer}\label{sec-tut-dicationic}
+This application illustrates multiple-excitation FPHD with QD-NEVPT2 target states for a dicationic thianthrene trimer and a neutral reference state. The active space comprises the HOMO and LUMO of each monomer. Obtain the exact geometry and original external quantum chemistry inputs from the deposited dataset~\cite{DiabatPaperData2026}.
+
+\subsection{Prepare the active orbitals}
+The deposited workflow begins with individual monomer RHF calculations. The monomer orbitals are combined into a trimer representation and then processed using the supplied ORCA orbital rotation inputs. These steps prepare the six active orbitals. As in the triphenylene example, the archive contains the original RHF and orbital rotation inputs but omits the intermediate GBW files and a complete documented orbital-merging operation. Prepare and verify the missing orbitals before the subsequent calculations.
+
+\subsection{Calculate reference and target states}
+Perform the deposited state-averaged CASSCF calculations using the prepared orbitals and the def2-SVP basis. The dicationic system uses CASSCF(4,6) with six singlet roots, while the neutral reference uses CASSCF(6,6). The subsequent external inputs apply QD-NEVPT2 to the dicationic roots and NEVPT2 to the neutral reference. Preserve the resulting ORCA logs and compatible orbital data. The original input files show which orbital file each stage reads and how its output is passed to the next stage. The uploaded dataset does not include all required intermediate files or final external logs.
+
+\subsection{Run FPHD}
+The published FPHD input reads the correlated target states and neutral reference separately. The deposited script explicitly uses \texttt{method = "QD-NEVPT2"} in both state packages, including the one-root neutral reference. The neutral calculation is described as NEVPT2 in the release article, but the deposited reader selection follows its ORCA logfile format. Check the intended method carefully when an ORCA output contains multiple electronic-structure methods. Section~\ref{sec-statepack} explains automatic and explicit method selection. The input defines three fragments, enables multiple-excitation FPHD, and uses baseline particle and hole populations of 0.8 for each fragment.
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/tutorials/dicationic-trimer/fphd/diabat.lst}

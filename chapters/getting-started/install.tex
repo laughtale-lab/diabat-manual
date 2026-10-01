@@ -1,0 +1,66 @@
+\section{Download and installation}\label{sec-install}
+Download the Linux x86\_64 binary archive for the desired release from the \href{https://github.com/laughtale-lab/diabat/releases}{official release page}. The archive filename includes its version number. For example, the version 2.0 Linux x86\_64 release is named
+\begin{lst-installation}
+diabat-v2.0-linux-x86_64.tar.gz
+\end{lst-installation}
+
+The commands below illustrate installation of this release. For another release, substitute its actual archive and extracted-directory names.
+\begin{lst-installation}
+tar -xzf diabat-v2.0-linux-x86_64.tar.gz
+cd diabat-v2.0-linux-x86_64
+bash install.sh
+\end{lst-installation}
+The installer checks selected runtime requirements, prepares the paths used by the distributed examples, and prints the executable directory to add to \texttt{PATH}. The shell startup files are not modified automatically. Use the installation location reported by the installer when setting the path. For example,
+\begin{lst-installation}
+export PATH="/your/installation/diabat-v2.0-linux-x86_64/bin:$PATH"
+\end{lst-installation}
+The archive also contains release notes, build information, examples, and the data required by those examples. Release-specific details are recorded in \texttt{README.md} and \texttt{BUILDINFO.txt}.
+
+\subsection{Command-line information}
+Several command-line queries can be used without an input script.
+\begin{lst-installation}
+diabat --help
+\end{lst-installation}
+This command prints the available command-line options.
+\begin{lst-installation}
+diabat --usage
+\end{lst-installation}
+This command prints a concise guide to serial, MPI, OpenMP, and hybrid execution. It also summarizes OpenMP thread selection and standard-output redirection.
+\begin{lst-installation}
+diabat --version
+\end{lst-installation}
+This command prints the installed program version and basic release information.
+\begin{lst-installation}
+diabat --module
+\end{lst-installation}
+This command lists the user modules and jobs available in the installed release.
+\begin{lst-installation}
+diabat --show diabat-fphd
+\end{lst-installation}
+This command prints information for a specified job. Replace \texttt{diabat-fphd} with another job name listed by \texttt{--module}.
+
+\subsection{Runtime libraries}\label{sec-runtime}
+The distributed executable requires compatible Intel Fortran runtime libraries, Intel Math Kernel Library (MKL) for BLAS and LAPACK, Intel MPI, and Intel OpenMP, together with standard Linux libraries. These libraries must be visible to the dynamic linker when the program starts.
+
+The way these libraries are provided depends on the local computer or HPC platform. Consult the system administrator or local software documentation when the Intel runtime environment is centrally managed. On a workstation with an Intel oneAPI installation, a common approach is to initialize the Intel environment before running the program.
+\begin{lst-installation}
+source /path/to/intel/oneapi/setvars.sh
+\end{lst-installation}
+If the required libraries are installed in nonstandard locations, their directories can instead be added to the dynamic-linker search path.
+\begin{lst-installation}
+export LD_LIBRARY_PATH="/path/to/intel/libs:$LD_LIBRARY_PATH"
+\end{lst-installation}
+On many HPC systems, the same environment is provided through site-specific modules. The exact module names vary between installations.
+\begin{lst-installation}
+module avail
+module load intel
+module load intel-mpi
+module load mkl
+\end{lst-installation}
+The executable can be checked with \texttt{ldd} after the environment has been loaded.
+\begin{lst-installation}
+ldd "$(command -v diabat)"
+\end{lst-installation}
+A line containing \texttt{not found} indicates that the corresponding runtime library is not visible in the current environment.
+
+The version 2.0 Linux x86\_64 binary was compiled on Red Hat Enterprise Linux Server 7.9 with Intel Fortran Compiler \texttt{ifort 19.0.1.144} and Intel MPI 2021.7. It was linked with Intel MKL and Intel OpenMP. A newer compatible Intel runtime can often be used, although compatibility ultimately depends on the binary interfaces provided by the installed libraries. The exact build record for each release is given in its \texttt{BUILDINFO.txt}.

@@ -1,0 +1,15 @@
+\section{Program modules}
+\progname{} has three user modules. The corresponding input jobs are listed below.
+\begin{enumerate}
+\item \textbf{diabat.} This module contains the following diabatization methods.
+  \begin{itemize}
+  \item \texttt{\$diabat-fphd}. Fragment particle-hole densities (FPHD).
+  \item \texttt{\$diabat-gmh}. Multistate generalized Mulliken--Hush (GMH).
+  \item \texttt{\$diabat-fcd}. Multistate fragment charge difference (FCD).
+  \item \texttt{\$diabat-fed}. Fragment excitation difference (FED).
+  \item \texttt{\$diabat-fedfcd}. Multistate FED--FCD.
+  \end{itemize}
+  FPHD is a distinctive feature of \progname{}. It permits diabatization of multichromophoric systems without prescribing the types of quasi-diabatic states in advance, provided that the states can be distinguished by their fragment particle and hole distributions. The module also includes the \texttt{\$diabat-utils-phasefix} utility for adjusting wave-function phases relative to selected reference states. See Chapter~\ref{chap-diabat}.
+\item \textbf{postorb.} For calculations requiring molecular orbital information, this module provides orbital inspection, selected AO and MO integrals, supported orbital-file exports, and spatial grid data for orbitals and orbital-derived densities. See Chapter~\ref{chap-postorb}.
+\item \textbf{postwfn.} This module provides analyses of electronic-state wave functions through density matrices, transition density matrices, and difference density matrices. Its functions include natural-orbital analyses, electronic and transition properties, and density visualizations. The input may describe adiabatic states or quasi-diabatic states obtained in an earlier calculation. See Chapter~\ref{chap-postwfn}.
+\end{enumerate}

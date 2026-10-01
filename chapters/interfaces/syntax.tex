@@ -1,0 +1,39 @@
+\section{Input script syntax}\label{sec-input-syntax}
+An input script is a plain-text file that describes the jobs to be performed and the options used by those jobs. The parser is shared by all three \progname{} modules and reports detailed diagnostics when a block, keyword, or value cannot be interpreted.
+
+\script{chap-interfaces}{script-general-structure} shows the general structure before the individual writing rules are discussed. The illustrated file names and numerical choices are examples. Replace them with the files and options required by your calculation.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-general-structure}@
+# Example of the general job and nested-block structure.
+$diabat-fphd
+  $$statepack
+    mofile = "orbitals.fchk"
+    statefile = "states.log"
+    state_index = 1..4
+  $$
+  $$frag
+    num_frag = 2
+    frag 1 = 1..4
+    frag 2 = 5..8
+  $$
+$
+\end{lst-script}
+
+The general writing rules are as follows.
+\begin{enumerate}
+\item \textbf{Comments.} The \texttt{\#} character starts a comment. Everything after it on the same line is ignored by the parser. A comment may occupy an entire line or follow an input statement.
+\item \textbf{Whitespace.} Spaces, indentation, and blank lines may be used to make the script easier to read. They do not define the block hierarchy. Indentation is therefore recommended for readability but is not required by the parser.
+\item \textbf{Blocks.} Computational tasks and structured groups of options are written as blocks. The number of leading dollar signs gives the block level. A first-level job begins with one dollar sign. A nested second-level block begins with two dollar signs and a third-level block begins with three. A block ends with a line containing the same number of dollar signs used to open it. A nested block must be completely contained inside its parent block.
+\item \textbf{Job and block names.} The block name follows the opening dollar signs. Hyphens may be part of a job name. For example, \texttt{\$diabat-fphd} selects the FPHD diabatization job. Use \texttt{diabat --module} to list available jobs and \texttt{diabat --show job\_name} to inspect a selected job.
+\item \textbf{Keywords.} A keyword is written as \texttt{name = value}. The keyword must appear in a block that accepts it. The parser reports an error when a known keyword is placed in the wrong block or when a block contains an unsupported keyword.
+\item \textbf{Character strings.} Character values may be written without quotes, with single quotes, or with double quotes when the corresponding keyword accepts a string. The examples in this manual use double quotes. Quoting is particularly useful for file paths and other values that contain spaces or characters that could otherwise be ambiguous.
+\item \textbf{Logical values.} Logical keywords use \texttt{.true.} or \texttt{.false.}.
+\item \textbf{Integer sequences.} Keywords such as \keyref{key-statepack-state_index}{state\_index}, \texttt{ao\_id}, \texttt{mo\_id}, fragment atom lists, and state sets use the common integer-sequence parser. Individual integers may be separated by commas. A consecutive inclusive range can be written as \texttt{i..j} or \texttt{i:j}. An explicit step is written as \texttt{i:j:step}. These forms may be mixed in one value. For example,
+\begin{lst-script}
+state_index = 1, 3..5, 8:12:2, 20
+\end{lst-script}
+selects \texttt{1, 3, 4, 5, 8, 10, 12, 20}. The values in a sequence may be listed in any order. An inclusive range may run upward or downward when its step has the appropriate sign. A zero step is invalid. Individual keywords may impose additional lower or upper bounds on the integers they accept.
+\item \textbf{Several jobs in one script.} A script may contain more than one first-level job block. They are parsed as independent jobs in the order defined by the program. Input files supplied to one job are not implicitly inherited by another job.
+\end{enumerate}
+
+The parser checks block structure, keyword placement, allowed values, required options, and many relations between input items. When a script is rejected, read the first diagnostic written to standard error and correct the reported problem before interpreting later messages. This behavior is also discussed in Appendix~\ref{app-troubleshooting}.

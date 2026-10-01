@@ -1,0 +1,44 @@
+\chapter[Numerical Data File Format]{Numerical Data File\\Format}\label{app-numfile}
+The numerical data file format is a \progname{}-specific convention for storing and reading numerical arrays together with the metadata needed to interpret them. It was designed to make exchange of numerical data straightforward and unambiguous within \progname{}. It is not intended as a general external data standard. In the current release, the format is used for Hamiltonian and related numerical data files, including matrices supplied through \keyref{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}. Future releases may use the same convention for additional numerical data.
+
+It is easiest to understand the format from a complete file before considering the individual header rules. The following example stores a symmetric adiabatic Hamiltonian. The matrix dimension, storage convention, numerical type, and physical unit are stated in the header, while the records below contain the actual matrix elements. A user-provided Hamiltonian in Chapter~\ref{chap-diabat} uses this representation and must be given in eV.
+
+\section{Example: a user-provided adiabatic Hamiltonian}\label{sec-numfile-Hexample}
+The following valid indexed matrix describes a real symmetric two-state Hamiltonian. The first line is mandatory. Subsequent comment lines may document units and provenance. Each lower-triangular entry occurs exactly once, and the reader reconstructs the opposite triangle. The numerical values are illustrative only and are not taken from a molecular calculation.
+\begin{lstlisting}[style=technicalfile]
+#@ data=matrix shape=[2,2] dtype=real store=lower symmetry=symmetric format=indexed
+# Example Hamiltonian for illustrating file syntax only. Energies are in eV.
+1 1 2.150000000000000
+2 1 0.031000000000000
+2 2 2.300000000000000
+\end{lstlisting}
+Supply this file using the \progname{} job keyword \texttt{adiabatic\_hamiltonian = "Hadi.dat"}. The matrix dimension must match the number and order of selected adiabatic states. For this keyword, each element is interpreted in electronvolts (eV). Check that the ordering is exactly the ordering of the internal states selected for diabatization.
+
+\section{Text files and binary files}
+A human-readable \texttt{.dat} file begins on its \emph{first line} with a single configuration header prefixed by \texttt{\#@}. Blank lines or ordinary \texttt{\#} comments may appear \emph{after} this header and before the numeric body, but not before the header. When the numeric body has started, do not insert further comment records. Header keys and values are case-insensitive. Keys are separated by whitespace and expressed as \texttt{key=value}. Unknown or repeated keys are not accepted.
+
+A \texttt{.bin} file instead stores a four-byte signed integer giving the header length, followed by the header string itself and the contiguous binary body. The header has the same semantic form as the text header and must begin with \texttt{\#@}. The reader requires a positive header length not exceeding 1024 bytes. Numeric values use the double-precision representation of the native toolchain used to build the program. Binary files accept only contiguous, not indexed, body storage and may not be portable across incompatible architectures or toolchains.
+
+\section{Header keys}\label{sec-numfile-header}
+The legal keys, conditions, and defaults are summarized below.
+\begin{longtable}{p{0.16\textwidth}p{0.72\textwidth}}
+\rowcolor{backgray}\textbf{Key} & \textbf{Meaning and permitted values}\\\hline
+\texttt{data} & Required. \texttt{vector}, \texttt{matrix}, or \texttt{rank3}. This determines the rank of the stored numerical array.\\
+\texttt{shape} & Required. Positive integer extent list in square brackets. Examples: \texttt{[5]}, \texttt{[3,3]}, and \texttt{[2,3,4]}.\\
+\texttt{dtype} & Required. \texttt{real} or \texttt{complex}. All real components are double precision.\\
+\texttt{store} & Required for a matrix. \texttt{full}, \texttt{diagonal}, \texttt{upper}, or \texttt{lower}. Vector and rank-three data admit only \texttt{full}, which can be omitted. A triangular or diagonal matrix must be square.\\
+\texttt{symmetry} & Required only for \texttt{matrix} with \texttt{store=upper} or \texttt{store=lower}. Use \texttt{symmetric} to mirror values, or \texttt{hermitian} to mirror and complex-conjugate them. Hermitian reconstruction requires \texttt{dtype=complex}. This key is illegal for other storage forms.\\
+\texttt{format} & Required. \texttt{indexed} or \texttt{contiguous}. Only \texttt{contiguous} is allowed in binary files.\\
+\texttt{order} & Optional when a full contiguous matrix or contiguous rank-three array is stored. \texttt{f} (the default) specifies Fortran array order. \texttt{c} specifies C-style order. It is not allowed for indexed, vector, or triangular storage.\\
+\texttt{missing} & Optional and valid only for text indexed format. The only supported value is \texttt{zero}, which fills unlisted positions in the explicit storage domain with zero. When omitted, all explicit positions must be present.\\\hline
+\end{longtable}
+
+\section{Body organization and indexing}
+All indexed records use one-based indices. For a real vector, write \texttt{i value}. For a complex vector, write \texttt{i re im}. For a real matrix, write \texttt{i j value}. For a complex matrix, write \texttt{i j re im}. Rank-three arrays use three explicit indices followed by the numeric value or its real and imaginary components. Use one complete indexed record per line. Duplicate indices and indices outside the declared dimensions are invalid.
+
+For \texttt{store=upper} only positions \(i\leq j\) are explicit. For \texttt{store=lower} only \(i\geq j\) are explicit. The remaining half of the matrix is reconstructed using the declared symmetry. For \texttt{store=diagonal}, only \(i=j\) records are permitted. \texttt{store=full} requires every matrix element unless the indexed reader is explicitly instructed to fill missing entries with zero. An indexed file may list its valid entries in a different record order, but the header and declared indices must remain consistent.
+
+Contiguous format stores numeric values without explicit indices. For a full matrix, \texttt{order=f} places the first array index in the fastest-varying position. \texttt{order=c} places the last index in the fastest-varying position. The same distinction applies to rank-three arrays. The logical \texttt{shape} never changes when the storage order changes. For triangular and diagonal storage, the explicit region and its supported traversal are determined by the reader rather than by an \texttt{order} key. When preparing a custom matrix manually, indexed format makes the chosen entries easiest to verify.
+
+\section{Common invalid combinations}
+The reader rejects a missing header, missing required keys, unknown or duplicate keys, a nonsquare triangular matrix, and \texttt{symmetry} with full or diagonal storage. It also rejects \texttt{order} in indexed format, \texttt{missing} in contiguous format, and indexed binary files. If a custom Hamiltonian fails to load, check these conditions before changing the physical calculation.

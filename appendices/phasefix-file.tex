@@ -1,0 +1,16 @@
+\chapter{Phasefix Hamiltonian File Format}\label{app-hamfile}
+Phasefix currently uses a separate indexed Hamiltonian format. A future release is intended to use the numerical data format of Appendix~\ref{app-numfile} for this input as well.
+
+The \texttt{hamfile} keyword of \texttt{diabat-utils-phasefix} uses an indexed text format that is \emph{different} from the numerical data-file format in Appendix~\ref{app-numfile}. The Phasefix reader skips an initial block of comment lines and reads one indexed matrix element per subsequent data line. Each record consists of the target-state row index, target-state column index, and a real Hamiltonian element:
+\begin{lst-script}
+@\examplenum{example-phasefix-hamfile}@
+# Two target states. Example numerical values only.
+1 1 2.1500000000
+1 2 0.0310000000
+2 2 2.3000000000
+\end{lst-script}
+The indices start at 1 and refer to the \emph{target states} in the order loaded by \texttt{\$\$statepack-target}. Supplying an element at \((i,j)\) also assigns the same value to \((j,i)\), so the input represents a real symmetric matrix. The reader derives the matrix dimension from the number of target wave functions rather than from a \texttt{shape} header. Provide each intended independent element exactly once and avoid duplicate transposed records that could overwrite one another.
+
+The \texttt{\#@ data=...} header required for numfile is not a Phasefix header and must not be used here. Conversely, a headerless three-column Phasefix file must not be used as \path{adiabatic_hamiltonian}. When Phasefix changes a target-state sign, the corresponding Hamiltonian row and column change sign consistently, leaving the associated diagonal energy unchanged.
+
+Use the format described here for the current release.

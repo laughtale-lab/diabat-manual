@@ -1,0 +1,9 @@
+\section{Donor--Acceptor Dyad Dimer}\label{sec-tut-dyad}
+This application examines a four-fragment donor--acceptor dyad dimer using FPHD. It follows the calculation reported in the software release article~\cite{Diabat2026}. Download the original Gaussian and \progname{} inputs from the accompanying dataset~\cite{DiabatPaperData2026}.
+
+\subsection{Prepare the electronic-structure data}
+The deposited Gaussian calculation uses CAM-B3LYP/cc-pVDZ and requests 15 singlet TDDFT excited states. Use the deposited Gaussian input to preserve the reported molecular geometry and atom order. Retain the resulting log and generate a corresponding formatted-checkpoint orbital file. The original \progname{} input expects them at the relative paths recorded in the dataset. The available dataset provides the Gaussian input but not the external log or formatted-checkpoint intermediate needed for an independent rerun.
+
+\subsection{Run FPHD}
+The deposited FPHD script selects the first 12 TDDFT excited states, uses the implicit single-excitation reference, and divides the system into four fragments representing the donor and remaining units of each dyad. Verify the resolved paths to the generated orbital and state files before execution.
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/tutorials/da-dyad-dimer/fphd/diabat.lst}

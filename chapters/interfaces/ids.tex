@@ -1,0 +1,63 @@
+\section{External state indices and internal state IDs}\label{sec-internal-ids}
+The \keyref{key-statepack-state_index}{state\_index} values refer to states as numbered in the selected external calculation output. After the selected states are read, \progname{} assigns consecutive \emph{internal state IDs} beginning with 1. The internal IDs follow the order in which packages and their selected states are loaded. These two numbering systems are distinct, even when their values happen to coincide.
+
+\medskip\noindent\textbf{Example 1. A selection from one file}\par\nobreak
+The following selection reads five states from one external calculation:
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-ids-one}@
+$$statepack
+  mofile = "sample.fchk"
+  statefile = "sample.log"
+  state_index = 1..3, 5, 7
+$$
+\end{lst-script}
+The selected external indices 1, 2, 3, 5, and 7 receive internal IDs 1, 2, 3, 4, and 5, respectively.
+\begin{center}\begin{tabular}{c|ccccc}
+External \keyref{key-statepack-state_index}{state\_index} & 1 & 2 & 3 & 5 & 7 \\ \hline
+Internal state ID & 1 & 2 & 3 & 4 & 5
+\end{tabular}\end{center}
+
+\medskip\noindent\textbf{Example 2. Including the reference ground state}\par\nobreak
+For CIS, TDA, TDHF, TDDFT, and TDA-aTB, index 0 loads the reference ground state even though the external output normally numbers its explicitly reported excited states from 1.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-ids-zero}@
+$$statepack
+  mofile = "sample.fchk"
+  statefile = "sample.log"
+  method = "TDDFT"
+  state_index = 0..3
+$$
+\end{lst-script}
+Four states are loaded. The reference ground state becomes internal state 1. The first, second, and third printed TDDFT excited states become internal states 2, 3, and 4.
+\begin{center}\begin{tabular}{c|cccc}
+External \keyref{key-statepack-state_index}{state\_index} & 0 & 1 & 2 & 3 \\ \hline
+Internal state ID & 1 & 2 & 3 & 4
+\end{tabular}\end{center}
+
+\medskip\noindent\textbf{Example 3. States from two files}\par\nobreak
+Consider a separate CASSCF reference calculation followed by a target calculation, as in the example below. The first package loads reference root 1. The second package selects target roots 2, 4, and 5. These four loaded states receive internal IDs 1 through 4 in package order, irrespective of the external root numbers.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-ids-two}@
+$$statepack
+  num_state_pack = 2
+  $$$statepack-1
+    mofile = "reference.molden"
+    statefile = "reference.log"
+    method = "CASSCF"
+    state_index = 1
+  $$$
+  $$$statepack-2
+    mofile = "target.molden"
+    statefile = "target.log"
+    method = "CASSCF"
+    state_index = 2, 4, 5
+  $$$
+$$
+\end{lst-script}
+\begin{center}\begin{tabular}{c|cccc}
+Package & 1 & 2 & 2 & 2 \\ \hline
+External \keyref{key-statepack-state_index}{state\_index} & 1 & 2 & 4 & 5 \\ \hline
+Internal state ID & 1 & 2 & 3 & 4
+\end{tabular}\end{center}
+
+Certain job options use internal state IDs rather than external indices. For example, \keyref{key-fphd-refid}{refid} identifies a previously loaded reference state, and the \texttt{\$\$stateset} block (Section~\ref{sec-stateset}) specifies groups of internal states permitted to mix. Always check the loaded-state order printed in standard output when selecting these values.

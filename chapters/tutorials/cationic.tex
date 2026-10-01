@@ -1,0 +1,19 @@
+\section{Monocationic Triphenylene Trimer}\label{sec-tut-cationic}
+This application treats doublet and quartet electronic states of a triphenylene trimer with multiple-excitation FPHD and a separately calculated neutral reference. The following procedure summarizes the original input sequence in the deposited dataset~\cite{DiabatPaperData2026}. Download and inspect the complete ORCA inputs before performing the quantum chemistry calculations.
+
+\subsection{Prepare the active orbitals}
+The active space comprises the highest occupied molecular orbital (HOMO) and lowest unoccupied molecular orbital (LUMO) of each triphenylene monomer. The original workflow begins with separate RHF calculations on the three monomers. The required monomer orbitals are then assembled into a trimer orbital representation, after which two supplied ORCA rotation inputs prepare the orbital selection for the multistate calculations. Use the rotations and file names in the deposited inputs rather than transferring their numerical orbital indices to a different orbital representation.
+
+The dataset contains the monomer RHF and rotation input files, but not the binary monomer orbitals, combined trimer orbital file, or a complete documented orbital-merging procedure. These intermediates must be prepared and verified before the later calculations can be reproduced.
+
+\subsection{Calculate the reference and target states}
+Using the prepared orbitals and def2-SVP basis, perform the deposited neutral state-averaged CASSCF(6,6) singlet ground-state calculation. This provides the neutral reference. Perform separate CASSCF(5,6) calculations for 12 cationic doublet roots and 13 cationic quartet roots. The orbital inputs, determinants, and output files must follow the original ORCA files. Their external logs and Molden orbital files are not included in the uploaded application data.
+
+\subsection{Run the doublet and quartet FPHD calculations}
+The two deposited \progname{} scripts independently load the neutral reference and the selected cationic roots. The reference has internal ID 1. The three molecular fragments correspond to the three monomers. The classification baseline particle and hole populations are set to 0.6 for each fragment. Both inputs request spin-resolved population data and density cubes. They are reproduced below without reproducing the external ORCA scripts.
+
+\noindent\textbf{Doublet calculation}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/tutorials/cationic-trimer/fphd-doublet/diabat.lst}
+
+\noindent\textbf{Quartet calculation}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/tutorials/cationic-trimer/fphd-quartet/diabat.lst}

@@ -1,0 +1,14 @@
+\section{Output Data Files}
+The output directory is selected with \texttt{outdir}. The files generated depend on the requested tasks. For multiple input orbital files, the corresponding filenames also include file indices.
+
+\outputfile{ao.dat}{Atomic orbital information written when \texttt{print\_ao} is enabled.}
+\outputfile{mo.dat}{Molecular orbital information written when \texttt{print\_mo} is enabled.}
+\outputfile{mo.fchk}{Molecular orbital data exported in formatted-checkpoint format when requested.}
+\outputfile{mo.molden}{Molecular orbital data exported in Molden format when requested.}
+\outputfile{aoovlp.dat}{Atomic orbital overlap integrals.}
+\outputfile{moovlp_alpha.dat}{Alpha-spin molecular orbital overlap integrals. Spin-resolved files are generated where supported by the input orbitals.}
+\outputfile{aodipo.dat}{Atomic orbital electric-dipole integrals.}
+\outputfile{modipo_alpha.dat}{Alpha-spin molecular orbital electric-dipole integrals. Other spin-resolved files are written where applicable.}
+\par\vspace{0.55\baselineskip}
+
+Selected orbital and density grid jobs also produce \texttt{.cub} files. Consult standard output for the exact names, orbital indices, and any additional requested files.

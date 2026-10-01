@@ -1,0 +1,10 @@
+\section{General background}\label{sec-diabat-common}
+Diabatization constructs quasi-diabatic states from selected adiabatic states of a molecular system. If \(\lvert\Psi_n\rangle\) are the chosen adiabatic wave functions, the resulting states are
+\begin{equation}
+\lvert\Phi_k\rangle=\sum_n U_{nk}\lvert\Psi_n\rangle,
+\end{equation}
+where \(U\) is the ATD transformation. In the adiabatic representation, the Hamiltonian is diagonal when the original adiabatic energies are used. The quasi-diabatic Hamiltonian is \(H^{\rm d}=U^{\dagger}H^{\rm ad}U\). Its diagonal elements are quasi-diabatic state energies and its off-diagonal elements are electronic couplings.
+
+\progname{} implements FPHD, GMH, FCD, FED, and multistate FED--FCD. Each method selects \(U\) using a different state descriptor or localization criterion. Their scope and restrictions are given in the following sections. For multistate calculations, different states can have similar descriptors. The program therefore normally performs a partial Hamiltonian diagonalization within groups of states having the same assigned character. The resulting transformation and Hamiltonian should be interpreted together.
+
+The program uses a uniform phase convention for coupling signs at a fixed nuclear geometry and Cartesian orientation. This does not itself ensure continuous phases when the nuclear geometry changes. Appendix~\ref{app-phase} explains the convention. The Phasefix utility is described in Section~\ref{sec-phasefix}.

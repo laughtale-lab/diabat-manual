@@ -1,0 +1,86 @@
+\section{Job Control}\label{sec-postwfn-job}
+Use the \texttt{\$postwfn} job header and the common \texttt{\$\$statepack} block. Select a reference state with \keyref{key-postwfn-refid}{refid} when a specific loaded reference is required for transition or difference-density analysis. As with diabatization, internal IDs follow the order of loaded states, not the external indices in the source file (Section~\ref{sec-internal-ids}).
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-postwfn-job}@
+$postwfn
+  # Add the required data block and analysis keywords here.
+$
+\end{lst-script}
+\subsubsection*{Keyword summary}
+The table below is a quick index of the available \texttt{postwfn} keywords. Click a keyword to jump to its detailed description.
+\begin{keywordoverview}
+\keyitem{key-postwfn-refid}{refid}{Reference state by internal state ID.}
+\keyitem{key-postwfn-print_wfn}{print\_wfn}{Export wave functions.}
+\keyitem{key-postwfn-print_wfn_gauss}{print\_wfn\_gauss}{Export a Gaussian-style wave-function file.}
+\keyitem{key-postwfn-print_wfn_qchem}{print\_wfn\_qchem}{Export a Q-Chem-style wave-function file.}
+\keyitem{key-postwfn-ngrid}{ngrid}{Specify spatial grid size.}
+\keyitem{key-postwfn-nat_orb}{nat\_orb}{Compute natural orbitals.}
+\keyitem{key-postwfn-permanent_dipo}{permanent\_dipo}{Compute permanent electric dipoles.}
+\keyitem{key-postwfn-permanent_multipole}{permanent\_multipole}{Compute permanent multipoles.}
+\keyitem{key-postwfn-elec_dens}{elec\_dens}{Generate electron-density cubes.}
+\keyitem{key-postwfn-spin_dens}{spin\_dens}{Generate spin-density cubes.}
+\keyitem{key-postwfn-nat_trans_orb}{nat\_trans\_orb}{Compute natural transition orbitals.}
+\keyitem{key-postwfn-trans_elec_dipo}{trans\_elec\_dipo}{Compute transition electric dipoles.}
+\keyitem{key-postwfn-trans_magnet_dipo}{trans\_magnet\_dipo}{Compute transition magnetic dipoles.}
+\keyitem{key-postwfn-trans_veloc_dipo}{trans\_veloc\_dipo}{Compute transition velocity dipoles.}
+\keyitem{key-postwfn-trans_multi_moment}{trans\_multi\_moment}{Compute transition multipoles.}
+\keyitem{key-postwfn-moment}{moment}{Specify Cartesian moment powers.}
+\keyitem{key-postwfn-trans_dens}{trans\_dens}{Generate transition-density cubes.}
+\keyitem{key-postwfn-hole_dens}{hole\_dens}{Generate hole-density cubes.}
+\keyitem{key-postwfn-particle_dens}{particle\_dens}{Generate particle-density cubes.}
+\keyitem{key-postwfn-nat_diff_orb}{nat\_diff\_orb}{Compute natural difference orbitals.}
+\keyitem{key-postwfn-diff_dens}{diff\_dens}{Generate difference-density cubes.}
+\keyitem{key-postwfn-detach_dens}{detach\_dens}{Generate detachment-density cubes.}
+\keyitem{key-postwfn-attach_dens}{attach\_dens}{Generate attachment-density cubes.}
+\keyitem{key-postwfn-outdir}{outdir}{Select output directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The following tables give the data type, default value, accepted input, and practical use of each keyword. The common orbital and state-file inputs are documented in Chapter~\ref{chap-interfaces}.
+\keyword
+{key-postwfn-refid}{refid}{Internal ID of an explicitly loaded reference state for the requested analyses.}{\OpOptional}{\OpInt}{Implicit underlying reference where the wave-function representation supplies it}{Positive integer, internal ID}{Specify the loaded reference state when the default reference is inappropriate or unavailable.}{refid = 1}
+\keyword
+{key-postwfn-print_wfn}{print\_wfn}{Print wave-function information in a \progname{}-compatible representation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{print\_wfn = .true.}
+\keyword
+{key-postwfn-print_wfn_gauss}{print\_wfn\_gauss}{Export wave-function information in the supported Gaussian-style representation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{print\_wfn\_gauss = .true.}
+\keyword
+{key-postwfn-print_wfn_qchem}{print\_wfn\_qchem}{Export wave-function information in the supported Q-Chem-style representation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{print\_wfn\_qchem = .true.}
+\keyword
+{key-postwfn-ngrid}{ngrid}{Target spatial grid count for the selected cube output tasks.}{\OpOptional}{\OpInt}{1728000}{Positive integer}{Use a smaller grid for preliminary visualization when appropriate. Increase it only when the spatial resolution is needed.}{ngrid = 1728000}
+\keyword
+{key-postwfn-nat_orb}{nat\_orb}{Construct natural orbitals by diagonalizing the one-particle density matrix.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{nat\_orb = .true.}
+\keyword
+{key-postwfn-permanent_dipo}{permanent\_dipo}{Calculate permanent electric dipole moments.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{permanent\_dipo = .true.}
+\keyword
+{key-postwfn-permanent_multipole}{permanent\_multipole}{Calculate permanent multipole moments using the Cartesian powers specified by \keyref{key-postwfn-moment}{moment}.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{When enabled, \keyref{key-postwfn-moment}{moment} is required.}{permanent\_multipole = .true.}
+\keyword
+{key-postwfn-elec_dens}{elec\_dens}{Generate cube files of electronic density for selected states.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{elec\_dens = .true.}
+\keyword
+{key-postwfn-spin_dens}{spin\_dens}{Generate cube files of spin density for selected states.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{spin\_dens = .true.}
+\keyword
+{key-postwfn-nat_trans_orb}{nat\_trans\_orb}{Construct natural transition orbitals from selected transition density matrices.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{nat\_trans\_orb = .true.}
+\keyword
+{key-postwfn-trans_elec_dipo}{trans\_elec\_dipo}{Calculate transition electric dipole moments.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{trans\_elec\_dipo = .true.}
+\keyword
+{key-postwfn-trans_magnet_dipo}{trans\_magnet\_dipo}{Calculate transition magnetic dipole moments.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{trans\_magnet\_dipo = .true.}
+\keyword
+{key-postwfn-trans_veloc_dipo}{trans\_veloc\_dipo}{Calculate transition velocity-dipole moments.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{trans\_veloc\_dipo = .true.}
+\keyword
+{key-postwfn-trans_multi_moment}{trans\_multi\_moment}{Calculate transition multipole moments using the Cartesian powers specified by \keyref{key-postwfn-moment}{moment}.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{When enabled, \keyref{key-postwfn-moment}{moment} is required.}{trans\_multi\_moment = .true.}
+\keyword
+{key-postwfn-moment}{moment}{Three nonnegative integer powers defining the Cartesian moment $x^n y^m z^l$.}{\OpOptional}{\OpIntseq}{None}{Exactly three nonnegative integers}{Required when \keyref{key-postwfn-permanent_multipole}{permanent\_multipole} or \keyref{key-postwfn-trans_multi_moment}{trans\_multi\_moment} is enabled.}{moment = 2, 0, 0}
+\keyword
+{key-postwfn-trans_dens}{trans\_dens}{Generate spatial transition-density cube files.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{trans\_dens = .true.}
+\keyword
+{key-postwfn-hole_dens}{hole\_dens}{Generate hole-density cube files from transition-density analysis.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{hole\_dens = .true.}
+\keyword
+{key-postwfn-particle_dens}{particle\_dens}{Generate particle-density cube files from transition-density analysis.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{particle\_dens = .true.}
+\keyword
+{key-postwfn-nat_diff_orb}{nat\_diff\_orb}{Construct natural difference orbitals from a difference density matrix.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{nat\_diff\_orb = .true.}
+\keyword
+{key-postwfn-diff_dens}{diff\_dens}{Generate electron-density difference cube files.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{diff\_dens = .true.}
+\keyword
+{key-postwfn-detach_dens}{detach\_dens}{Generate detachment-density cube files from difference-density analysis.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{detach\_dens = .true.}
+\keyword
+{key-postwfn-attach_dens}{attach\_dens}{Generate attachment-density cube files from difference-density analysis.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this task when its associated output is needed.}{attach\_dens = .true.}
+\keyword
+{key-postwfn-outdir}{outdir}{Directory in which \texttt{postwfn} writes its output files and density-analysis subdirectories.}{\OpOptional}{\OpString}{\texttt{postwfn.out}}{Writable directory path}{Set a separate directory when preserving outputs from several runs.}{outdir = "postwfn.out"}

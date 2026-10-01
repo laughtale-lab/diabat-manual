@@ -1,0 +1,71 @@
+\section{Job Control}\label{sec-postorb-job}
+The module is invoked through the \texttt{\$postorb} block. Supply exactly one \keyref{key-statepack-mofile}{mofile} or one \texttt{\$\$mopack} block. Enable the required analysis options and, for orbital-resolved outputs, supply the AO or MO indices. Multiple orbital files are useful for inter-file overlap and related property calculations. See the keyword tables and the examples in Section~\ref{sec-postorb-examples} for concrete inputs.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-postorb-job}@
+$postorb
+  # Add the required data block and analysis keywords here.
+$
+\end{lst-script}
+\subsubsection*{Keyword summary}
+The table below is a quick index of the available \texttt{postorb} keywords. Click a keyword to jump to its detailed description.
+\begin{keywordoverview}
+\keyitem{key-postorb-ao_id}{ao\_id}{Select AO indices.}
+\keyitem{key-postorb-mo_id}{mo\_id}{Select MO indices.}
+\keyitem{key-postorb-print_ao}{print\_ao}{Print AO and basis information.}
+\keyitem{key-postorb-print_mo}{print\_mo}{Print MO coefficients and energies.}
+\keyitem{key-postorb-print_mo_fchk}{print\_mo\_fchk}{Export formatted-checkpoint orbital data.}
+\keyitem{key-postorb-print_mo_molden}{print\_mo\_molden}{Export Molden orbital data.}
+\keyitem{key-postorb-ovlp_inte}{ovlp\_inte}{Calculate overlap integrals.}
+\keyitem{key-postorb-dipo_inte}{dipo\_inte}{Calculate electric-dipole integrals.}
+\keyitem{key-postorb-magnet_dipo_inte}{magnet\_dipo\_inte}{Calculate magnetic-dipole integrals.}
+\keyitem{key-postorb-velo_inte}{velo\_inte}{Calculate velocity integrals.}
+\keyitem{key-postorb-moment_inte}{moment\_inte}{Calculate custom multipole integrals.}
+\keyitem{key-postorb-moment}{moment}{Specify Cartesian multipole powers.}
+\keyitem{key-postorb-ao_cube}{ao\_cube}{Export AO cube files.}
+\keyitem{key-postorb-mo_cube}{mo\_cube}{Export MO cube files.}
+\keyitem{key-postorb-lowdin}{lowdin}{Calculate the Loewdin AO representation.}
+\keyitem{key-postorb-elec_dens}{elec\_dens}{Export electron-density cubes.}
+\keyitem{key-postorb-spin_dens}{spin\_dens}{Export spin-density cubes.}
+\keyitem{key-postorb-ngrid}{ngrid}{Set the visualization grid size.}
+\keyitem{key-postorb-outdir}{outdir}{Specify output directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The following tables give the data type, default value, accepted input, and practical use of each keyword. The common orbital and state-file inputs are documented in Chapter~\ref{chap-interfaces}.
+\keyword
+{key-postorb-ao_id}{ao\_id}{AO indices for selected AO-based analysis and cube output.}{\OpOptional}{\OpIntseq}{None}{Positive integer sequence}{Supply only the AO indices needed by the requested AO output.}{ao\_id = 1..4}
+\keyword
+{key-postorb-mo_id}{mo\_id}{MO indices for selected MO-based analysis and cube output.}{\OpOptional}{\OpIntseq}{None}{Positive integer sequence}{Supply only the AO indices needed by the requested AO output.}{mo\_id = 15..20}
+\keyword
+{key-postorb-print_ao}{print\_ao}{Print atomic orbital and basis-set information.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{print\_ao = .true.}
+\keyword
+{key-postorb-print_mo}{print\_mo}{Print molecular orbital coefficients and associated information.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{print\_mo = .true.}
+\keyword
+{key-postorb-print_mo_fchk}{print\_mo\_fchk}{Export orbital data to a formatted-checkpoint representation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{print\_mo\_fchk = .true.}
+\keyword
+{key-postorb-print_mo_molden}{print\_mo\_molden}{Export orbital data in Molden format.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{print\_mo\_molden = .true.}
+\keyword
+{key-postorb-ovlp_inte}{ovlp\_inte}{Calculate AO and MO overlap integral matrices.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{ovlp\_inte = .true.}
+\keyword
+{key-postorb-dipo_inte}{dipo\_inte}{Calculate electric-dipole integral matrices.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{dipo\_inte = .true.}
+\keyword
+{key-postorb-magnet_dipo_inte}{magnet\_dipo\_inte}{Calculate magnetic-dipole integral matrices.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{magnet\_dipo\_inte = .true.}
+\keyword
+{key-postorb-velo_inte}{velo\_inte}{Calculate velocity integral matrices.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{velo\_inte = .true.}
+\keyword
+{key-postorb-moment_inte}{moment\_inte}{Calculate integrals for a user-selected Cartesian multipole moment.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{moment\_inte = .true.}
+\keyword
+{key-postorb-moment}{moment}{Three nonnegative integer powers specifying a Cartesian multipole moment when moment\_inte is enabled.}{\OpOptional}{\OpIntseq}{None}{Three nonnegative integers}{Required with moment\_inte enabled.}{moment = 2, 0, 0}
+\keyword
+{key-postorb-ao_cube}{ao\_cube}{Write cube files for selected AO wave functions.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{ao\_cube = .true.}
+\keyword
+{key-postorb-mo_cube}{mo\_cube}{Write cube files for selected MO wave functions.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{mo\_cube = .true.}
+\keyword
+{key-postorb-lowdin}{lowdin}{Construct the Loewdin orthogonalized AO representation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{lowdin = .true.}
+\keyword
+{key-postorb-elec_dens}{elec\_dens}{Write a cube file of the total electron density from the supplied orbital occupation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{elec\_dens = .true.}
+\keyword
+{key-postorb-spin_dens}{spin\_dens}{Write a cube file of the spin density from the supplied orbital occupation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Enable this option only when its output is needed.}{spin\_dens = .true.}
+\keyword
+{key-postorb-ngrid}{ngrid}{Target grid count for spatial cube output.}{\OpOptional}{\OpInt}{1728000}{Positive integer}{Increase grid size only after inspecting lower-cost visualization output.}{ngrid = 1728000}
+\keyword
+{key-postorb-outdir}{outdir}{Directory in which \texttt{postorb} writes its output files and task subdirectories.}{\OpOptional}{\OpString}{\texttt{postorb.out/}}{Writable directory path}{Set a separate directory when preserving outputs from several runs.}{outdir = "postorb.out"}

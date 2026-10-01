@@ -1,0 +1,84 @@
+\section{Phasefix}\label{sec-phasefix}
+\subsection{Background}
+The overall sign of an electronic-state wave function is arbitrary. Two separately calculated wave functions can therefore describe the same state but have opposite signs. Such differences matter when comparing signed interstate properties, including electronic couplings, between calculations. The common phase convention used in the diabatization methods (Appendix~\ref{app-phase}) fixes the signs reproducibly for a given nuclear geometry and Cartesian frame. It does not, however, align independently obtained wave functions to a user-selected reference set or establish phase continuity between nearby nuclear geometries.
+
+The Phasefix job is intended for this reference-based alignment. Reference electronic states are supplied in the \texttt{statepack-ref} block. A separate \texttt{statepack-target} block specifies the states to be aligned. The job determines whether to retain or reverse the sign of \emph{each target state}. It does not reorder states, find an adiabatic-to-diabatic mixing transformation, or change the reference states. Two alignment criteria are available. In both cases, an indicator is calculated between every reference state and every target state. For each target state, the reference yielding the largest absolute indicator is selected. A negative indicator causes the target wave function to be multiplied by $-1$. Otherwise, its sign is retained. Thus, supplying several reference states does not enforce a one-to-one matching of reference and target states.
+
+\paragraph{Overlap mode.}
+With \texttt{mode = "overlap"}, the indicator is a \emph{pseudo-overlap} calculated from the alpha-spin transition density matrix between a reference state $\Psi_i^{\mathrm{ref}}$ and a target state $\Psi_j^{\mathrm{tar}}$,
+\begin{equation}
+  S_{ij}^{\mathrm{pseudo}} = \frac{\operatorname{Tr}\!\left(\mathbf D_{\alpha}^{(ij)}\right)}{N_{\alpha}^{\mathrm{ref}}}.
+\end{equation}
+Here $N_{\alpha}^{\mathrm{ref}}$ is the number of alpha-spin electrons in reference state $i$. The implementation evaluates the transition density from the configuration coefficients without accounting for overlap between the molecular orbitals of independently supplied calculations. Consequently, $S_{ij}^{\mathrm{pseudo}}$ should not be interpreted as an exact electronic wave-function overlap when the orbitals differ. For each target $j$, the sign of the element having the largest $|S_{ij}^{\mathrm{pseudo}}|$ determines whether its wave-function sign is reversed. The calculated matrix is written to \texttt{pseudo\_overlap.dat}.
+
+Overlap mode is suited to comparing wave functions obtained in separate calculations, including adjacent geometries along a nuclear trajectory. A useful starting point is to supply the same number of reference and target states, chosen so that they correspond approximately. Nearby geometries are preferable because the approximation neglects molecular-orbital overlaps. Inspect the pseudo-overlap matrix to check whether each intended correspondence is clearly distinguished. Small or comparable magnitudes for several references indicate that the phase assignment may be ambiguous. A sign change alone does not resolve state crossings or substantial mixing between states.
+
+\paragraph{Dipole mode.}
+With \texttt{mode = "dipole"}, the indicator comes from the transition dipole between each reference--target pair after symmetric orthogonalization. Using the alpha-spin contribution, its Cartesian vector is evaluated as
+\begin{equation}
+  \boldsymbol\mu_{ij}^{\mathrm{orth}} =
+  \frac{\boldsymbol\mu_{ij}-S_{ij}^{\mathrm{pseudo}}
+  (\boldsymbol\mu_{ii}+\boldsymbol\mu_{jj})/2}
+  {1-(S_{ij}^{\mathrm{pseudo}})^2},
+\end{equation}
+where $\boldsymbol\mu_{ij}$ is the transition dipole and $\boldsymbol\mu_{ii}$ and $\boldsymbol\mu_{jj}$ are the permanent dipoles of the two states. The numerical implementation safeguards the denominator when the pseudo-overlap approaches unity. For each reference--target pair, the Cartesian component of $\boldsymbol\mu_{ij}^{\mathrm{orth}}$ with the largest absolute value is selected as its signed indicator. The reference giving the largest absolute indicator for each target then determines that target's phase. The calculated vectors are written to \texttt{orth\_trans\_dipo.dat}.
+
+Dipole mode is useful when a user wishes to align states from an individual diabatization calculation to a phase-reference state other than the one selected automatically by the diabatization method. For this purpose, a single reference state is usually appropriate. As in overlap mode, the dipole quantities are evaluated without molecular-orbital overlap contributions, so comparisons between substantially different orbital sets or distant nuclear geometries should not be treated as reliable phase tracking. A weak or nearly vanishing selected dipole component also makes the sign assignment sensitive to numerical details.
+
+\paragraph{Adjusted wave functions and Hamiltonian.}
+After either alignment procedure, the diagonal sign matrix $\mathbf P=\operatorname{diag}(s_1,\ldots,s_n)$ contains $s_j=+1$ for a retained phase and $s_j=-1$ for a reversed phase. The adjusted target wave functions and phase signs are exported. If \keyref{key-phasefix-hamfile}{hamfile} supplies a Hamiltonian in the \emph{target-state ordering}, its elements are transformed consistently,
+\begin{equation}
+   \mathbf H^{\mathrm{aligned}}=\mathbf P^{\mathsf T}\mathbf H^{\mathrm{target}}\mathbf P,
+   \qquad H_{jk}^{\mathrm{aligned}}=s_js_k H_{jk}^{\mathrm{target}}.
+\end{equation}
+The state energies remain unchanged, while an off-diagonal coupling changes sign if exactly one of its two states changes sign. The input Hamiltonian format is described in Appendix~\ref{app-hamfile}. Phasefix adjusts relative signs only. It cannot establish a meaningful comparison when the supplied reference and target states do not represent sufficiently corresponding electronic states.
+
+\subsection{Job Control}
+Unlike the shared \texttt{statepack} format in Section~\ref{sec-statepack}, Phasefix reads two independent second-level blocks. The first block provides reference-state data. The second provides the target states whose phases are to be adjusted. The block structure is shown below.
+
+Within each block, specify \keyref{key-statepack-mofile}{mofile}, \keyref{key-statepack-statefile}{statefile}, and \keyref{key-statepack-state_index}{state\_index}. Add the optional \keyref{key-statepack-method}{method} keyword only when a particular data set must be selected from the external log. The selected reference and target states must correspond to the intended phase comparison. \script{chap-diabat}{script-phasefix-job} shows the block hierarchy rather than a complete calculation-specific input.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-phasefix-job}@
+$diabat-utils-phasefix
+  $$statepack-ref
+    # Supply reference orbital file, state file, and state indices.
+  $$
+  $$statepack-target
+    # Supply target orbital file, state file, and state indices.
+  $$
+  # Set phase-alignment mode and other relevant options.
+$
+\end{lst-script}
+These comments mark where to supply the actual files and state selections. This schematic block is not itself a runnable calculation. A fixed-geometry phase convention alone does not track wave functions between different nuclear geometries. The optional \texttt{hamfile} uses Appendix~\ref{app-hamfile}, not the numerical-data file reader of Appendix~\ref{app-numfile}.
+\subsubsection*{Keyword summary}
+The table below summarizes the Phasefix-specific keywords. The two state packages use the state-package rules in Chapter~\ref{chap-interfaces}.
+\begin{keywordoverview}
+\keyitem{key-phasefix-mode}{mode}{Choose overlap- or dipole-based phase alignment.}
+\keyitem{key-phasefix-hamfile}{hamfile}{Optional target Hamiltonian to phase-adjust.}
+\keyitem{key-phasefix-outdir}{outdir}{Select the output directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The following tables give the Phasefix-specific input requirements.
+\keyword
+{key-phasefix-mode}{mode}{Criterion for aligning the target wave-function phases to the specified reference states.}{\OpRequired}{\OpString}{None}{\texttt{overlap} or \texttt{dipole}}{Use overlap mode for corresponding states from separate calculations or dipole mode for a selected phase-reference state.}{mode = "dipole"}
+\keyword
+{key-phasefix-hamfile}{hamfile}{Text file with indexed real target-state Hamiltonian elements to be adjusted using the same phase signs.}{\OpOptional}{\OpString}{None}{Existing Phasefix Hamiltonian text file}{Follow Appendix~\ref{app-hamfile}. This is not a numfile matrix.}{hamfile = "Htarget.dat"}
+\keyword
+{key-phasefix-outdir}{outdir}{Directory for the adjusted wave functions and optional Hamiltonian.}{\OpOptional}{\OpString}{\texttt{phasefix.out}}{Writable directory}{Retain a separate copy of the original reference and target files.}{outdir = "phasefix.out"}
+
+\subsection{Output Data Files}
+Phasefix writes the following files in the selected output directory.
+
+\outputfile{phase_sign.dat}{The sign assigned to each target state. A value of $+1$ retains its original sign and $-1$ reverses it.}
+\outputfile{pseudo_overlap.dat}{The reference--target pseudo-overlap matrix, produced in overlap mode.}
+\outputfile{orth_trans_dipo.dat}{The three Cartesian components of the orthogonalized reference--target transition dipoles, produced in dipole mode.}
+\outputfile{mo.molden}{Molecular orbitals associated with the phase-adjusted target states.}
+\outputfile{wavefunctions.dat}{Phase-adjusted target-state wave functions in the \progname{} wave-function format.}
+\outputfile{hamiltonian_original.dat}{A copy of the supplied target-state Hamiltonian, written only when \texttt{hamfile} is provided.}
+\outputfile{hamiltonian_phase_transformed.dat}{The Hamiltonian after the corresponding state-sign transformation, written only when \texttt{hamfile} is provided.}
+\par\vspace{0.55\baselineskip}
+
+Inspect \texttt{phase\_sign.dat} and the matrix or dipole data used for alignment when deciding whether the selected references establish a meaningful correspondence.
+
+\subsection{Examples}
+The Job Control skeleton illustrates the separate reference and target packages. Select the available phase-alignment mode to suit the wave-function data. To follow a sequence of nuclear geometries, choose reliable reference wave functions from the preceding geometry, provide the target states at the next geometry, and check their ordering before each Phasefix job. A valid input cannot be specified generically without the corresponding reference and target files.

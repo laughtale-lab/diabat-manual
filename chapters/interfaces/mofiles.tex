@@ -1,0 +1,32 @@
+\section{Molecular orbital files}\label{sec-mofiles}
+The \keyref{key-statepack-mofile}{mofile} keyword specifies the file from which \progname{} reads the molecular geometry, atomic orbital (AO) basis, and molecular orbitals (MOs). Use a supported formatted-checkpoint or Molden-style file produced from the external calculation. An orbital file path may be absolute or relative to the working directory.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-single-mofile}@
+mofile = "path/to/orbitals.fchk"
+\end{lst-script}
+\keyword
+{key-statepack-mofile}{mofile}{Path of a supported molecular orbital data file. The orbitals, atom sequence, and AO basis must be compatible with the electronic states selected for the task.}{\OpRequired{} when an orbital file is needed}{\OpString}{None}{Readable supported orbital data file}{Use the orbital file belonging to the corresponding external quantum chemistry calculation.}{mofile = "orbitals.fchk"}
+
+For \texttt{postorb}, the \texttt{\$\$mopack} block can contain several orbital files when required by a particular job. The \texttt{mopack} block is \emph{not} used inside \texttt{statepack}. An electronic-state package instead has its own \keyref{key-statepack-mofile}{mofile} value, as described in Section~\ref{sec-statepack}.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-mopack}@
+$postorb
+  $$mopack
+    num_file = 2
+    mofile 1 = "file_1.fchk"
+    mofile 2 = "file_2.fchk"
+  $$
+  print_mo = .true.
+$
+\end{lst-script}
+
+\subsection*{Mopack keywords}
+The \texttt{mopack} form is used only by \texttt{postorb}. The following entries describe its numbered orbital-file list.
+\begin{keywordoverview}
+\keyitem{key-mopack-num_file}{num\_file}{Number of orbital files in the package.}
+\keyitem{key-mopack-mofile_i}{mofile i}{Path of each numbered orbital file.}
+\end{keywordoverview}
+\keyword
+{key-mopack-num_file}{num\_file}{Number of numbered orbital-file entries in the \texttt{mopack} block.}{\OpRequired}{\OpInt}{None}{Positive integer}{Set this to the exact number of \texttt{mofile i} entries that follow.}{num\_file = 2}
+\keyword
+{key-mopack-mofile_i}{mofile i}{Path of orbital file number \texttt{i} in a \texttt{mopack}. The index runs consecutively from 1 through \texttt{num\_file}.}{\OpRequired}{\OpString}{None}{Readable supported orbital data file}{Keep the numbered entries consecutive and use paths valid from the working directory.}{mofile 1 = "file\_1.fchk"}

@@ -1,0 +1,95 @@
+\section{FPHD}\label{sec-fphd}
+\subsection{Background}
+The fragment particle-hole densities (FPHD) method constructs quasi-diabatic states by localizing particle and hole distributions with respect to user-defined molecular fragments~\cite{Wang-JPCL-2021-1032,Wang-JCTC-2023-3900}. The descriptors are therefore tied directly to where electrons are attached and removed. This makes FPHD useful for charge-transfer states, locally excited states, correlated triplet-pair states, and more complicated states that combine charge and excitation characters. The method does not require the user to prescribe those state types before the calculation. It does require the relevant quasi-diabatic states to be distinguishable by their fragment particle and hole distributions.
+
+\progname{} provides two FPHD formulations. The single-excitation formulation uses transition density matrices between the target states and a reference state. The particle and hole numbers obtained from these transition densities are localized over the fragments. This formulation is appropriate for wave functions with the supported single-excitation representation, including CIS, TDA, TDHF, TDDFT, and TDA-aTB data. When such a wave-function type is loaded and \keyref{key-fphd-multiexcite}{multiexcite} is omitted, \progname{} selects the single-excitation formulation automatically.
+
+The multiple-excitation formulation uses difference density matrices relative to the reference state. Its objective retains information that is lost when a state has substantial multiple-excitation character. It is therefore the appropriate FPHD formulation for CASSCF, RASCI-family, NEVPT2, QD-NEVPT2, and other supported wave functions that are not represented as a single excitation from one reference. In this formulation, the reference state may be obtained with a different electronic-structure method and may even have a different number of electrons. The target and reference calculations must nevertheless use the same molecular geometry and compatible AO basis so that their density matrices can be compared in a common representation.
+
+After localization, \progname{} classifies the intermediate quasi-diabatic states from their fragment particle and hole populations. The hole number minus the particle number gives the charge change on a fragment relative to the reference. The smaller of the particle and hole populations provides a useful measure of local excitation on that fragment. These quantities allow the same classification procedure to describe conventional LE and CT states together with multiexcitonic and mixed characters. The optional \keyref{key-fphd-refnp}{refnp} and \keyref{key-fphd-refnh}{refnh} values define background particle and hole populations for this classification step. They do not alter the localization objective.
+
+When several intermediate states have the same classified character, their particle-hole descriptors do not uniquely distinguish them. The Hamiltonian is then partially diagonalized within each class by default in a multistate calculation. This removes arbitrary mixing inside the class while retaining the distinction between different physical classes. The release article gives the formal objectives and the general classification procedure in detail~\cite{Diabat2026}. For routine use, the reference-state choice, fragment definitions, spatial partition, and selected adiabatic-state space are usually more important than the formal equations.
+
+\subsection{Job Control}\label{sec-fphd-job}
+Start an FPHD calculation using the following block. Place the \texttt{statepack} and \texttt{frag} definitions and any selected keywords inside it. These nested blocks are described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-fphd-job}@
+$diabat-fphd
+  # Place statepack, frag, and relevant computational options here.
+$
+\end{lst-script}
+
+\subsubsection*{Keyword summary}
+The table below gives a compact index of the FPHD options. Each keyword links to its detailed description. Shared diabatization keywords are included where they are commonly used with FPHD.
+\begin{keywordoverview}
+\keyitem{key-fphd-multiexcite}{multiexcite}{Choose the FPHD formulation or allow automatic selection.}
+\keyitem{key-fphd-refid}{refid}{Reference state selected by internal ID.}
+\keyitem{key-fphd-extref}{extref}{Optional external reference states for single-excitation FPHD.}
+\keyitem{key-fphd-refnp}{refnp}{Baseline fragment particle numbers used in classification.}
+\keyitem{key-fphd-refnh}{refnh}{Baseline fragment hole numbers used in classification.}
+\keyitem{key-fphd-printspin}{print\_spin\_fphn}{Print spin-resolved fragment populations where supported.}
+\keyitem{key-fphd-svdmin}{svdmin}{Transition-density singular-value threshold.}
+\keyitem{key-fphd-jacobi}{jacobi\_thr}{Jacobi optimization convergence threshold.}
+\keyitem{key-fphd-maxcycle}{maxcycle}{Maximum Jacobi optimization cycles.}
+\keyitem{key-fphd-cyclestep}{cyclestep}{Optimization steps per Jacobi cycle.}
+\keyitem{key-fphd-densitycube}{density\_cube}{Produce density cube files.}
+\keyitem{key-fphd-ngrid}{ngrid}{Spatial grid size for cube output.}
+\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken population analysis.}
+\keyitem{key-common-partial_diag}{partial\_diag}{Partially diagonalize states with matching characters.}
+\keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Optional input Hamiltonian in eV.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the constructed quasi-diabatic wave functions.}
+\keyitem{key-common-outdir}{outdir}{Output directory.}
+\keyitem{key-common-tmpdir}{tmpdir}{Temporary directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The tables below give the detailed descriptions and defaults of the FPHD-specific options. The shared keywords are explained in Section~\ref{sec-diabat-settings}.
+\keyword
+{key-fphd-multiexcite}{multiexcite}{Select the multiple-excitation rather than the single-excitation FPHD formulation. When omitted, the program determines the formulation from the loaded wave-function type.}{\OpOptional}{\OpLogic}{Automatically selected}{Logical}{Usually omit this keyword. Specify it only to override automatic selection.}{multiexcite = .true.}
+\keyword
+{key-fphd-refid}{refid}{Internal ID of a loaded reference state (Section~\ref{sec-internal-ids}). The reference is normally outside the states being diabatized.}{\OpOptional}{\OpInt}{Automatically use the underlying reference for single-excitation wave functions. Otherwise required}{1 to number of loaded states}{For multiple-excitation FPHD, the reference may have a different electron number, but it must share the same nuclear geometry and AO basis. Explicitly load and select a reference for CASSCF, RASCI, or related wave functions.}{refid = 1}
+\keyword
+{key-fphd-extref}{extref}{Additional external reference-state IDs in the single-excitation FPHD formulation.}{\OpOptional}{\OpIntseq}{None}{Internal state ID sequence}{Do not use with the multiple-excitation formulation.}{extref = 3, 5}
+\keyword
+{key-fphd-refnp}{refnp}{Reference baseline particle populations on the fragments used in FPHD state classification.}{\OpOptional}{\OpRealseq}{Zero for each fragment}{Exactly one real value per fragment}{Use only when background populations alter the intended classification.}{refnp = 0.6, 0.6}
+\keyword
+{key-fphd-refnh}{refnh}{Reference baseline hole populations on the fragments used in FPHD state classification.}{\OpOptional}{\OpRealseq}{Zero for each fragment}{Exactly one real value per fragment}{Choose together with refnp when needed.}{refnh = 0.6, 0.6}
+\keyword
+{key-fphd-printspin}{print\_spin\_fphn}{Print spin-resolved particle and hole populations in applicable multiple-excitation FPHD analyses.}{\OpOptional}{\OpLogic}{\OpFalse}{Logical}{Useful for open-shell systems and mixed radical--triplet states.}{print\_spin\_fphn = .true.}
+\keyword
+{key-fphd-svdmin}{svdmin}{Singular-value threshold used in the single-excitation transition-density formulation.}{\OpOptional}{\OpReal}{0.0001}{Real threshold}{Check sensitivity if important transition-density contributions are small.}{svdmin = 0.0001}
+\keyword
+{key-fphd-jacobi}{jacobi\_thr}{Jacobi-sweep convergence threshold.}{\OpOptional}{\OpReal}{$\max(10^{-8},\mathrm{fperr})$}{Nonnegative real}{Use the default unless convergence requires closer examination.}{jacobi\_thr = 1e-8}
+\keyword
+{key-fphd-maxcycle}{maxcycle}{Maximum number of Jacobi cycles. Setting it to zero skips the optimization.}{\OpOptional}{\OpInt}{1000}{Nonnegative integer}{Retain the default for normal FPHD runs.}{maxcycle = 1000}
+\keyword
+{key-fphd-cyclestep}{cyclestep}{Number of optimization steps in a Jacobi cycle. An omitted value is determined from the number of states being mixed.}{\OpOptional}{\OpInt}{$N(N+1)/2$ (computed when omitted)}{Nonnegative integer}{Normally omit this keyword. Use a custom value only when investigating convergence.}{cyclestep = 100}
+\keyword
+{key-fphd-densitycube}{density\_cube}{Write particle/hole or attachment/detachment spatial grid data for the constructed quasi-diabatic states.}{\OpOptional}{\OpLogic}{\OpFalse}{Logical}{Enable if the localized densities need visual inspection.}{density\_cube = .true.}
+\keyword
+{key-fphd-ngrid}{ngrid}{Requested spatial grid count when density cube output is enabled.}{\OpOptional}{\OpInt}{1728000}{Positive integer}{A larger grid increases computational effort and output size.}{ngrid = 1728000}
+
+\subsection{Output Data Files}
+FPHD produces the common diabatization files of Section~\ref{sec-diabat-output}. Standard output also reports the localization process, fragment particle and hole information, state classification, and subsequent partial diagonalization. The optional \keyref{key-fphd-densitycube}{density\_cube} output contains spatial particle/hole densities in the single-excitation formulation or attachment/detachment densities in the multiple-excitation formulation. When enabled and supported by the selected states, \texttt{print\_spin\_fphn} prints spin-resolved fragment populations.
+
+\subsection{Examples}
+The following five examples use the public distribution input files and its installed data. They cover single-excitation and multiple-excitation FPHD in dimers, a multimer, and a charged system. The paths and computational parameters shown in the inputs correspond to their respective distributed cases. Replace installation-specific paths if the examples were copied to another directory.
+
+\exampleheading{1. Dimer with single excitations: formaldehyde, singlet--singlet EET (TDDFT)}
+\examplepath{examples/diabat/fphd/formaldehyde_dimer/tddft/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fphd-formaldehyde-tddft.lst}
+
+\exampleheading{2. Multimer with single excitations: ethylene tetramer (TDDFT)}
+\examplepath{examples/diabat/fphd/ethylene_tetramer/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fphd-ethylene-tetramer.lst}
+
+\exampleheading{3. Neutral dimer with multiple excitations: singlet water dimer (RASCI)}
+\examplepath{examples/diabat/fphd/water_dimer/neutral_singlet_rasci/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fphd-water-dimer-singlet-rasci.lst}
+
+\exampleheading{4. Neutral dimer with multiple excitations: triplet water dimer (RASCI)}
+\examplepath{examples/diabat/fphd/water_dimer/neutral_triplet_rasci/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fphd-water-dimer-triplet-rasci.lst}
+
+\exampleheading{5. Charged dimer with multiple excitations: asymmetric cationic ethylene dimer (RASCI)}
+\examplepath{examples/diabat/fphd/ethylene_dimer/asymmetric_cationic/rasci/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fphd-cationic-ethylene-rasci.lst}

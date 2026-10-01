@@ -1,0 +1,58 @@
+\section{Multistate FED--FCD}\label{sec-fedfcd}
+\subsection{Background}
+Multistate FED--FCD combines the fragment excitation difference and fragment charge difference descriptors for two-fragment systems in which excitation energy transfer and photoinduced charge transfer can coexist and mix~\cite{Nottoli-PR-2018-p215}. The two descriptors separate different physical characters in complementary ways. A charge-transfer state has a large fragment charge difference and normally a much smaller excitation difference. A locally excited state has a large excitation difference and a much smaller charge difference.
+
+The calculation begins with the charge-difference and excitation-difference matrices for the selected adiabatic states. It then forms a combined descriptor from the square of the excitation-difference matrix and the square of the charge-difference matrix. Diagonalization of this descriptor separates an initial CT block from an initial LE block. Within the CT block, the charge-difference descriptor separates the two directions of charge transfer. Within the LE block, the excitation-difference descriptor separates excitation localized on fragment 1 from excitation localized on fragment 2.
+
+This procedure gives four physical classes in the full calculation. States within a class may still have similar descriptor values, so the Hamiltonian is partially diagonalized within each class to remove the remaining arbitrary mixing. The resulting transformation can therefore describe coherent mixing among LE and CT characters while retaining a clear distinction between the classes defined by the two descriptors.
+
+The complete excitation-difference matrix requires interstate quantities that are available for the supported single-excitation wave-function representations. The multistate FED--FCD implementation is therefore restricted to single-excitation theories. The user may omit the FED contribution with \keyref{key-fedfcd-skip_fed}{skip\_fed} and obtain the corresponding multistate FCD treatment. The FCD contribution may instead be omitted with \keyref{key-fedfcd-skip_fcd}{skip\_fcd} to obtain a multistate FED treatment. Both contributions cannot be disabled in the same job.
+
+\subsection{Job Control}
+Start the job with the following first-level block. Add the \texttt{statepack} and \texttt{frag} blocks described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-fedfcd-job}@
+$diabat-fedfcd
+  # Place statepack, frag, and relevant computational options here.
+$
+\end{lst-script}
+\subsubsection*{Keyword summary}
+The following table lists the method-specific controls and the most frequently used shared options.
+\begin{keywordoverview}
+\keyitem{key-fedfcd-skip_fed}{skip\_fed}{Omit the FED descriptor and perform multistate FCD.}
+\keyitem{key-fedfcd-skip_fcd}{skip\_fcd}{Omit the FCD descriptor and perform multistate FED.}
+\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken fragment populations.}
+\keyitem{key-common-partial_diag}{partial\_diag}{Control partial diagonalization within state classes.}
+\keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read an optional adiabatic Hamiltonian in eV.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the quasi-diabatic wave functions.}
+\keyitem{key-common-outdir}{outdir}{Set the output directory.}
+\keyitem{key-common-tmpdir}{tmpdir}{Set the temporary directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The shared keywords are explained in Section~\ref{sec-diabat-settings}. The two method-specific switches are given below.
+\keyword
+{key-fedfcd-skip_fed}{skip\_fed}{Omit the FED descriptor and carry out the corresponding multistate FCD calculation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Keep this false for the combined FED--FCD calculation. Do not set both skip flags to true.}{skip\_fed = .false.}
+\keyword
+{key-fedfcd-skip_fcd}{skip\_fcd}{Omit the FCD descriptor and carry out the corresponding multistate FED calculation.}{\OpOptional}{\OpLogic}{\OpFalse}{\OpTrue{} or \OpFalse}{Keep this false for the combined FED--FCD calculation. Do not set both skip flags to true.}{skip\_fcd = .false.}
+\subsection{Output Data Files}
+Besides the common output files in Section~\ref{sec-diabat-output}, the job writes the descriptor matrices in the adiabatic representation to the \texttt{property\_matrix/} subdirectory.
+\outputfile{property_matrix/Q1.dat}{Fragment-1 charge matrix.}
+\outputfile{property_matrix/Q2.dat}{Fragment-2 charge matrix.}
+\outputfile{property_matrix/dQ.dat}{Fragment charge-difference matrix.}
+\outputfile{property_matrix/E1.dat}{Fragment-1 excitation matrix.}
+\outputfile{property_matrix/E2.dat}{Fragment-2 excitation matrix.}
+\outputfile{property_matrix/dE.dat}{Fragment excitation-difference matrix.}
+\outputfile{property_matrix/D.dat}{Combined descriptor matrix used to separate CT and LE blocks.}
+\par\vspace{0.55\baselineskip}
+The standard output reports whether the combined or reduced calculation was selected and gives the resulting state classes.
+
+\subsection{Examples}
+The following input scripts are taken from the public distribution. Install the corresponding data before running them.
+
+\exampleheading{Donor--acceptor dimer, TDDFT}
+\examplepath{examples/diabat/fedfcd/donor_acceptor/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fedfcd-donor_acceptor.lst}
+
+\exampleheading{Symmetric ethylene dimer, singlet states}
+\examplepath{examples/diabat/fedfcd/ethylene_dimer/symmetric_singlet/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fedfcd-ethylene_dimer-symmetric_singlet.lst}

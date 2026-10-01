@@ -1,0 +1,46 @@
+\section{GMH}\label{sec-gmh}
+\subsection{Background}
+The generalized Mulliken--Hush (GMH) method constructs quasi-diabatic states for charge-transfer problems from molecular dipole moments~\cite{Cave-CPL-1996-p15,Yang-JCP-2013-p154104}. Its physical premise is that a charge-localized representation can be characterized by large differences in permanent dipole moment and small transition dipole moments between different quasi-diabatic states. The original formulation was introduced for a two-state donor--acceptor problem. The implementation in \progname{} follows the multistate extension and can treat more than two adiabatic states within a two-fragment model.
+
+For the user-defined fragments, \progname{} defines the charge-transfer direction from the center of mass of fragment 2 toward the center of mass of fragment 1. Permanent and transition dipole moments in the adiabatic basis are projected on this direction. Diagonalization of the projected dipole matrix produces an intermediate representation in which the projected transition dipole moments between different states vanish. The resulting projected permanent dipoles provide the descriptor used for state classification.
+
+For a neutral system, the projected permanent dipole of each intermediate state is converted to an effective charge-transfer number using the fragment separation. Values of at least 0.5 and at most -0.5 identify the two opposite CT directions. Values between these limits are treated as non-CT states. For a charged system, the total molecular charge also contributes to the permanent dipole. \progname{} removes this contribution by placing a fictitious charge equal to the total system charge at the center of mass of fragment 1 before the effective CT number is evaluated. This treatment avoids relying on a separately supplied ground-state dipole and is suitable for the charged two-fragment cases supported by the implementation.
+
+When more than two target states are present, several states may belong to the same CT class even when the dipole descriptor cannot distinguish them uniquely. The Hamiltonian is then partially diagonalized within each assigned class. The \keyref{key-common-partial_diag}{partial\_diag} keyword controls this step. GMH is intended for charge-transfer problems. It should not be used as a general excitation-energy-transfer diabatization method merely because a numerical transformation can be obtained.
+
+\subsection{Job Control}
+Start the job with the following first-level block. Add the \texttt{statepack} and \texttt{frag} blocks described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-gmh-job}@
+$diabat-gmh
+  # Place statepack, frag, and relevant computational options here.
+$
+\end{lst-script}
+\subsubsection*{Keyword summary}
+The following table lists the keywords commonly used in a GMH job. The links lead to the detailed definitions given earlier in the manual.
+\begin{keywordoverview}
+\keyitem{key-statepack-statefile}{statefile}{Electronic-state data file in \texttt{statepack}.}
+\keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read an optional adiabatic Hamiltonian in eV.}
+\keyitem{key-common-partial_diag}{partial\_diag}{Control partial diagonalization within state classes.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the quasi-diabatic wave functions.}
+\keyitem{key-common-outdir}{outdir}{Set the output directory.}
+\keyitem{key-common-tmpdir}{tmpdir}{Set the temporary directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+GMH has no additional method-specific keywords. The electronic-state package is described in Section~\ref{sec-statepack}. Fragment definition is described in Section~\ref{sec-diabat-frag}. Shared diabatization options are described in Section~\ref{sec-diabat-settings}.
+\subsection{Output Data Files}
+Besides the common output files in Section~\ref{sec-diabat-output}, the job also writes the projected dipole matrix in the original adiabatic representation.
+\outputfile{property_matrix/dipole_mat.dat}{The matrix of permanent and transition dipole moments projected onto the charge-transfer direction in the original adiabatic representation. The diagonal elements are projected permanent dipoles, and the off-diagonal elements are projected transition dipoles.}
+\par\vspace{0.55\baselineskip}
+The standard output also reports the derived CT descriptors and, for multistate calculations, the resulting state classes.
+
+\subsection{Examples}
+The following input scripts are taken from the public distribution. Install the corresponding data before running them.
+
+\exampleheading{Donor--acceptor dimer, TDDFT}
+\examplepath{examples/diabat/gmh/donor_acceptor/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/gmh-donor_acceptor.lst}
+
+\exampleheading{Cationic asymmetric ethylene dimer, CIS}
+\examplepath{examples/diabat/gmh/asymmetric_ethylene_dimer/cis/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/gmh-asymmetric_ethylene_dimer-cis.lst}

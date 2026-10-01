@@ -1,0 +1,9 @@
+\section{Pentacene Tetramer}\label{sec-tut-pentacene}
+This application illustrates multiple-excitation FPHD for a tetramer involving correlated triplet-pair character. The published Q-Chem calculation uses RASCI with an eight-electron, eight-orbital active space and requests 40 roots. Obtain the complete external input from the deposited dataset~\cite{DiabatPaperData2026} rather than transcribing an incomplete orbital or configuration specification from this manual.
+
+\subsection{Prepare the electronic-structure data}
+Use the deposited Q-Chem input to perform the reported calculation and preserve its printed configuration coefficients. Prepare the formatted orbital file and the Q-Chem output file under the names expected by the deposited FPHD script. These external output files are not present in the uploaded dataset, so regenerating them is necessary for an independent rerun.
+
+\subsection{Run FPHD}
+The deposited input reads 31 electronic states, including the separately identified reference ground state. It uses four molecular fragments, enables the multiple-excitation formulation, and requests density cube output. Its internal reference ID is 1, as explained in Section~\ref{sec-internal-ids}.
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/tutorials/pentacene-tetramer/fphd/diabat.lst}

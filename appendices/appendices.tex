@@ -1,0 +1,20 @@
+\clearpage
+\thispagestyle{empty}
+\phantomsection\label{app-divider}\addcontentsline{toc}{chapter}{APPENDIX}
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchappresnum}{APPENDIX~}}
+\addtocontents{toc}{\protect\setlength{\protect\cftchapnumwidth}{7.9em}}\null\vfill
+\begin{center}{\fontsize{36pt}{42pt}\selectfont\bfseries APPENDIX}\end{center}
+\vfill\null\clearpage
+\appendix
+\renewcommand{\chaptername}{APPENDIX}
+\renewcommand{\cftchappresnum}{APPENDIX~}
+\renewcommand{\cftchapaftersnum}{\quad}
+\setlength{\cftchapnumwidth}{7.9em}
+% The original title format, fonts and spacing are preserved. Only the prefix
+% in appendix chapter headings changes from a number to APPENDIX A, etc.
+\titleformat{\chapter}[hang]{\Huge\bfseries}
+{\MakeUppercase{\appendixname}\ \thechapter\hspace{12pt}\textcolor{gray75}{|}\hspace{12pt}}{0pt}{\Huge\bfseries}
+\input{appendices/numfile}
+\input{appendices/phasefix-file}
+\input{appendices/troubleshooting}
+\input{appendices/technical}

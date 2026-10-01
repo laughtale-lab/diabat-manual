@@ -1,0 +1,13 @@
+\section{Output Data Files}
+The selected analyses write their results under \texttt{outdir}. The output files depend on the requested analysis and the selected electronic states. Typical filenames are listed below.
+
+\outputfile{no.molden}{Natural orbitals from the selected electronic-state density matrix.}
+\outputfile{nto_h.molden}{Hole orbitals obtained from a natural-transition-orbital analysis.}
+\outputfile{nto_p.molden}{Particle orbitals from the corresponding natural-transition-orbital analysis.}
+\outputfile{ndo.molden}{Natural difference orbitals obtained from the selected difference-density matrix.}
+\outputfile{permanent_dipo.dat}{Permanent electric-dipole moments for the selected states.}
+\outputfile{permanent_multipole.dat}{Permanent multipole moments when this analysis is requested.}
+\outputfile{trans_elec_dipo.dat}{Electric transition-dipole moments for the specified electronic-state pairs.}
+\par\vspace{0.55\baselineskip}
+
+For multiple states, filenames may include state indices. Results calculated relative to a separate reference may carry a \texttt{\_ref} suffix. The spatial-density tasks generate \texttt{.cub} files in the corresponding output subdirectories. The actual filenames and output selection are reported to standard output.

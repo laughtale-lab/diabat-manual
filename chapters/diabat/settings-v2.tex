@@ -1,0 +1,39 @@
+\section{Common job settings}\label{sec-diabat-settings}
+The principal diabatization jobs use the shared electronic-state package of Section~\ref{sec-statepack} and the fragment definition of Section~\ref{sec-diabat-frag}. The following options are used by several methods. The Job Control subsection for each method links back to these entries rather than repeating their definitions.
+
+\subsection{Common keywords}
+\subsubsection*{Keyword summary}
+The following table provides a compact index of the options shared by the principal diabatization jobs. Each keyword links to its detailed description below.
+\begin{keywordoverview}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Save the constructed quasi-diabatic wave functions.}
+\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken population analysis.}
+\keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Supply the input adiabatic Hamiltonian in eV.}
+\keyitem{key-common-partial_diag}{partial\_diag}{Diagonalize the Hamiltonian within assigned state classes.}
+\keyitem{key-common-outdir}{outdir}{Select the output directory.}
+\keyitem{key-common-tmpdir}{tmpdir}{Select the temporary directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+The tables below give the data type, effective default behavior, accepted values, and practical use of each shared keyword.
+\keyword
+{key-common-diabat_wfn}{diabat\_wfn}{Write the resulting quasi-diabatic wave functions for further analysis.}{\OpOptional}{\OpLogic}{\OpTrue}{\OpTrue{} or \OpFalse}{Keep enabled when follow-up wave-function analysis is required.}{diabat\_wfn = .true.}
+\keyword
+{key-common-partition}{partition}{Choose the AO-based fragment population partition.}{\OpOptional}{\OpString}{\texttt{lowdin}}{\texttt{lowdin} or \texttt{mulliken}}{Choose according to the fragments and the intended population analysis. L\"owdin is generally preferred; Mulliken is also available.}{partition = "lowdin"}
+\keyword
+{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read a user-provided adiabatic Hamiltonian in place of the default diagonal matrix of selected adiabatic-state energies. The file must use the numerical data format in Appendix~\ref{app-numfile}. Its real $N\times N$ matrix must follow the internal ordering of the $N$ adiabatic states being diabatized. \textbf{Every matrix element must be expressed in eV.} Supplying this Hamiltonian does not change the wave functions or state descriptors.}{\OpOptional}{\OpString}{Not used}{Readable real numfile matrix}{Verify the state order, dimension, and energy units before interpretation.}{adiabatic\_hamiltonian = "Hadi.dat"}
+\keyword
+{key-common-partial_diag}{partial\_diag}{Perform partial Hamiltonian diagonalization among states assigned to the same class. For a calculation with exactly two target states, this step is skipped by default unless the keyword is explicitly supplied.}{\OpOptional}{\OpLogic}{Enabled for multistate jobs. Skipped automatically for two-state jobs when omitted}{\OpTrue{} or \OpFalse}{Normally omit this keyword. Set it explicitly only when the intermediate property-localized representation or an explicitly requested two-state partial diagonalization is required.}{partial\_diag = .true.}
+\keyword
+{key-common-outdir}{outdir}{Directory for job-specific output files.}{\OpOptional}{\OpString}{Method name followed by .out}{Writable directory path}{Use a separate directory for each case.}{outdir = "fphd.out"}
+\keyword
+{key-common-tmpdir}{tmpdir}{Directory for temporary files.}{\OpOptional}{\OpString}{Method name followed by .tmp}{Writable directory path}{Use an appropriate high-capacity workspace.}{tmpdir = "fphd.tmp"}
+\subsection{Restricting which states may mix}\label{sec-stateset}
+The optional \texttt{\$\$stateset} block defines groups of states that may mix within a diabatization. Its indices are \emph{internal state IDs}, as explained in Section~\ref{sec-internal-ids}, not the external indices selected by \keyref{key-statepack-state_index}{state\_index}. Check the state-loading order reported on standard output before using the block.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-stateset}@
+$$stateset
+  num_state_set = 2
+  set 1 = 1..3
+  set 2 = 4..6
+$$
+\end{lst-script}
+Use state sets only when the chosen groups are physically appropriate. Examine the reported groups after loading, including any automatically completed states.

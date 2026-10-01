@@ -1,0 +1,49 @@
+\section{FCD}\label{sec-fcd}
+\subsection{Background}
+The fragment charge difference (FCD) method constructs charge-localized quasi-diabatic states from the difference in electronic charge assigned to two molecular fragments~\cite{Voityuk-JCP-2002-p5607,Yang-JCP-2013-p154104}. In contrast to GMH, FCD does not require a dipole-projection direction. The descriptor is built directly from fragment-resolved one-particle density and transition-density information together with the nuclear charges of the two fragments.
+
+For each pair of adiabatic states, \progname{} evaluates a charge-difference matrix. Its diagonal elements are the charge difference between the two fragments for the individual adiabatic states. Its off-diagonal elements contain the corresponding transition-density contribution. Diagonalizing this matrix gives an intermediate representation that maximizes separation with respect to the fragment charge difference. The eigenvalues of the descriptor matrix are then used to identify the physical direction of charge localization.
+
+The implementation follows a multistate treatment. To use the same classification procedure for neutral and charged systems, \progname{} shifts the descriptor eigenvalues by the total molecular charge in units of the elementary charge. A shifted value below -1 identifies electron transfer from fragment 2 to fragment 1. A shifted value above 1 identifies the opposite transfer direction. Intermediate values are treated as non-CT character. When several states belong to the same class, the Hamiltonian is partially diagonalized within that class to remove mixing that the charge-difference descriptor alone does not determine.
+
+The public implementation accepts multiple adiabatic states but uses exactly two molecular fragments. FCD is intended for charge-transfer problems. For excitation energy transfer without the corresponding charge-separation character, FED or another suitable method should be used instead.
+
+\subsection{Job Control}
+Start the job with the following first-level block. Add the \texttt{statepack} and \texttt{frag} blocks described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-fcd-job}@
+$diabat-fcd
+  # Place statepack, frag, and relevant computational options here.
+$
+\end{lst-script}
+\subsubsection*{Keyword summary}
+The following table lists the keywords commonly used in an FCD job.
+\begin{keywordoverview}
+\keyitem{key-statepack-statefile}{statefile}{Electronic-state data file in \texttt{statepack}.}
+\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken fragment populations.}
+\keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read an optional adiabatic Hamiltonian in eV.}
+\keyitem{key-common-partial_diag}{partial\_diag}{Control partial diagonalization within state classes.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the quasi-diabatic wave functions.}
+\keyitem{key-common-outdir}{outdir}{Set the output directory.}
+\keyitem{key-common-tmpdir}{tmpdir}{Set the temporary directory.}
+\end{keywordoverview}
+\subsubsection*{Detailed keyword descriptions}
+FCD has no additional method-specific keywords. The shared input and output controls are described in Sections~\ref{sec-statepack}, \ref{sec-diabat-frag}, and~\ref{sec-diabat-settings}.
+\subsection{Output Data Files}
+Besides the common output files in Section~\ref{sec-diabat-output}, the job writes the fragment charge matrices in the adiabatic representation to the \texttt{property\_matrix/} subdirectory.
+\outputfile{property_matrix/Q1.dat}{Fragment-1 charge matrix.}
+\outputfile{property_matrix/Q2.dat}{Fragment-2 charge matrix.}
+\outputfile{property_matrix/dQ.dat}{Fragment charge-difference matrix used by FCD.}
+\par\vspace{0.55\baselineskip}
+The standard output also reports the CT descriptors and the resulting state classes.
+
+\subsection{Examples}
+The following input scripts are taken from the public distribution. Install the corresponding data before running them.
+
+\exampleheading{Donor--acceptor dimer, TDDFT}
+\examplepath{examples/diabat/fcd/donor_acceptor/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fcd-donor_acceptor.lst}
+
+\exampleheading{Cationic asymmetric ethylene dimer, CIS}
+\examplepath{examples/diabat/fcd/asymmetric_ethylene_dimer/cis/diabat.inp}
+\lstinputlisting[style=diabatfile,escapechar=@]{examples/display/release/fcd-asymmetric_ethylene_dimer-cis.lst}
