@@ -1,0 +1,17 @@
+@\examplenum{postorb-mo_cube}@
+## This is an example of the input file for @\textcolor{mygreen}{\$}@postorb job.
+## generate cube files of HOMO and LUMO for the ethylene dimer
+
+# orbital post-processing job block
+$postorb
+
+  # paths of mo files
+  mofile = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.fchk"
+
+  # ID of selected MOs (16 and 17 are HOMO and LUMO, respectively, for this system)
+  mo_id = 16..17
+
+  # generate cube files of selected MO wavefunctions
+  mo_cube = .true.
+
+$ # end of postorb job block

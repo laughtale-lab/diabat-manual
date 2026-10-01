@@ -1,0 +1,22 @@
+## This is an example of the input file for $diabat-fedfcd job.
+## Diabatization including 4 electronic excited states (from TDDFT) for ethylene dimer
+
+# Multistate FED-FCD job block
+$diabat-fedfcd
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.fchk"
+    statefile = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.log"
+    state_index = 1..4  # include the first 4 excited states for diabatization
+  $$
+
+  # fragment definition
+  $$frag
+    num_frag = 2
+    frag 1 = 1..6
+    frag 2 = 7..12
+  $$
+
+$ # end of Multistate FED-FCD job block
+

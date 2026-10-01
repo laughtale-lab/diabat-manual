@@ -1,0 +1,36 @@
+## This is an example of the input file for diabat program.
+## The symbol # represents comment.
+
+
+# phasefix job in diabat module
+# adjust the phase of target-state wfns according to overlap with ref wfns
+$diabat-utils-phasefix
+
+  # reference mo and state files (required)
+  $$statepack-ref
+    mofile=  "path/to/mofile/of/reference/states"
+    statefile=  "path/to/electronic_state_file/of/reference/states"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 14:18:2
+    #method = "CASSCF"    # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+  # target mo and state files (required)
+  $$statepack-target
+    mofile=  "path/to/mofile/of/target/states"
+    statefile=  "path/to/electronic_state_file/of/target/states"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 14:18:2
+    #method = "CASSCF"    # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+  mode = "dipole"  ## = "overlap" or "dipole"
+
+  # (optional) name of the file storing upper triangle of the hamiltonian matrix of target states
+  #hamfile = "path/to/hamiltonian/file/of/target/states"
+
+  # (optional) path of output directory
+  #outdir = "phasefix.out"
+
+$
+

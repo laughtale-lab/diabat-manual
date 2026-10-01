@@ -1,0 +1,39 @@
+@\examplenum{tutorial-dication}@
+###
+
+$diabat-fphd
+
+  $$statepack
+    num_state_pack = 2
+
+    $$$statepack-1
+      mofile = "../qd-nevpt2/neutral-66/orca.molden.input"
+      statefile = "../qd-nevpt2/neutral-66/orca.log"
+      state_index = 1
+      method = "QD-NEVPT2"
+    $$$
+
+    $$$statepack-2
+      mofile = "../qd-nevpt2/dicationic-46-root-6/orca.molden.input"
+      statefile = "../qd-nevpt2/dicationic-46-root-6/orca.log"
+      state_index = 1..6
+      method = "QD-NEVPT2"
+    $$$
+  $$
+
+  $$<frag>
+    num_frag = 3
+    frag 1 = 1..22
+    frag 2 = 23..44
+    frag 3 = 45..66
+  $$
+
+  multiexcite = .true.
+  refid = 1
+  density_cube = .true.
+
+  refnp = 0.8, 0.8, 0.8
+  refnh = 0.8, 0.8, 0.8
+  print_spin_fphn = .true.
+
+$

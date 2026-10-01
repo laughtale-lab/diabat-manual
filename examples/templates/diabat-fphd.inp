@@ -1,0 +1,59 @@
+## This is an example of the input file for diabat program.
+## The symbol # represents comment.
+
+
+# diabatization by FPHD method
+$diabat-fphd
+
+  # mo and state files
+  $$statepack
+    mofile=  "path/to/mofile"
+    statefile=  "path/to/electronic_state_file"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 14:18:2
+    #method = "CASSCF"    # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+  # fragment definition
+  $$frag
+      num_frag = 2
+      frag 1 = 1..30   # Example format: 1, 2:5, 6..10, 14:18:2
+      frag 2 = 31..60
+  $$
+
+  ## following are optional keywords/blocks
+
+  # only the states in the same set will be mixed in diabatization
+  #$$stateset
+  #  num_state_set = 2
+  #  set 1 = 1,2
+  #  set 2 = 3..8
+  #$$
+
+  #adiabatic_hamiltonian = "path/to/custom/adiabatic_hamiltonian_file.dat"  # name of the file storing custom adiabatic hamiltonian matrix
+
+  #refid = 1                  # ID of reference state (required for QC methods other than TDDFT)
+  #multiexcite = .true.       # turn on multi-excitation implementation (default is to automatically set according to the type of wavefunctions)
+  #density_cube = .false.     # print density cube files for diabatic states (default=.false.)
+  #diabat_wfn = .false.       # print diabatic wavefunction (default=.true.)
+  #partial_diag = .false.     # perform partial diagonalization (default=.true.)
+  #print_spin_fphn = .false.  # print spin-resolved fragment particle and hole numbers information
+
+  #refnp = 0.6, 0.7     # reference background fragment particle numbers (default are zeros)
+  #refnh = 0.6, 0.7     # reference background fragment hole numbers (default are zeros)
+
+  #svdmin = 0.0001      # threshold in SVD for transition density matrix (default=1e-4)
+  #jacobi_thr = 1.0e-4  # threshold for Jacobi convergence (default=1e-8)
+  #maxcycle = 0         # maximal Jacobi cycles
+  #cyclestep = 1        # number of steps in a single Jacobi cycle
+
+  #extref = 3, 5        # multiple definition of external reference states (valid only for single-excitation implementation)
+
+  #partition = "lowdin"    # partition scheme for calculating fragment overlap matrices
+
+  #prefix = "pfix"               # prefix of output files
+  #outdir = "fphd.out"           # path of output directory
+  #tmpdir = "tmpdir/tmp1/tmp2/"  # path of temporary file directory
+
+$
+

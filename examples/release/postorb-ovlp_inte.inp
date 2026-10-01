@@ -1,0 +1,17 @@
+## This is an example of the input file for $postorb job.
+## calculate overlap matrix between AOs (and MOs) from different mofiles
+
+# orbital post-processing job block
+$postorb
+
+  # paths of mo files
+  $$mopack
+    num_file = 2
+    mofile 1 = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.fchk"
+    mofile 2 = "PATH_of_diabat/data/water_dimer_rasci/singlet/water_singlet.fchk"
+  $$
+
+  # calculate overlap integral matrix (for both AO and MO)
+  ovlp_inte = .true.
+
+$ # end of postorb job block

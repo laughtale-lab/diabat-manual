@@ -1,0 +1,41 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\MYHUGE{\fontsize{36}{18}\selectfont}
+\definecolor{gray75}{gray}{0.75}
+
+% line spacing
+\linespread{1.5}
+
+% hyperlink
+\hypersetup{ % This gets rid of boxes around clickable links but puts them in color
+    pdftitle={\progname User Manual},
+    colorlinks,
+    linkcolor={blue},
+    citecolor={red},
+    urlcolor={blue}  % cyan is not dark enough on a white background
+}
+
+% chapter title style
+\titleformat{\chapter}[hang]
+{\Huge\bfseries}
+{\thechapter\hspace{20pt}\textcolor{gray75}{|}\hspace{20pt}}{0pt}{\Huge\bfseries}
+
+% page style
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancyhead[L]{\nouppercase{\chaptername~ \thechapter~ |~ \leftmark}}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% TOC style
+\setlength{\cftsecnumwidth}{3em}
+\setlength{\cftsubsecnumwidth}{3.5em}
+\makeatletter
+	\renewcommand{\@tocrmarg}{4em}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

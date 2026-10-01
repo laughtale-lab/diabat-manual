@@ -1,0 +1,138 @@
+%!!!!!!!!! Temporary Use !!!!!!!!!!!!!!!!!!!!!!!!!!
+%!!!!!!!!! Temporary Use !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+\definecolor{backgray}{rgb}{0.92,0.92,0.92}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{myorange}{rgb}{1.0,0.4,0}
+\definecolor{myredstring}{rgb}{0.76,0.06,0.15}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Shell script definition
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstnewenvironment{lst-installation}{
+  \lstset{
+  backgroundcolor=\color{backgray},
+  commentstyle=\color{mygreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{mygray},
+  stringstyle=\color{myredstring},
+  basicstyle=\ttfamily\small,
+  %basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=none,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  escapechar=@
+  }
+}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Script block definition
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{scriptcapgray}{rgb}{0.3,0.3,0.3}
+
+\newcounter{scriptnum}[chapter]
+
+\newcommand{\scriptnum}[1]{\noindent\#\hspace{6.73cm}
+  \refstepcounter{scriptnum}
+  \hypertarget{#1}{
+  \textcolor{scriptcapgray}
+  {\textbf{\textrm{ Script \thechapter-\arabic{scriptnum}}}}}\label{#1}}
+
+\newcommand{\script}[2]{%
+  \textcolor{blue}{\hyperlink{#2}{Script \ref{#1}-\ref{#2}}}%
+}
+
+\newcounter{examplenum}[chapter]
+
+\newcommand{\examplenum}[1]{\noindent\#\hspace{6.65cm}
+  \refstepcounter{examplenum}
+  \hypertarget{#1}{
+  \textcolor{scriptcapgray}
+  {\textbf{\textrm{ Example \thechapter-\arabic{examplenum}}}}}\label{#1}}
+
+\newcommand{\example}[2]{%
+  \textcolor{blue}{\hyperlink{#2}{Example \ref{#1}-\ref{#2}}}%
+}
+
+\lstdefinelanguage{script}{
+  morekeywords={\$,\$\$,\$\$\$,\$\$\$\$,\$\$\$\$\$},
+  morecomment=[l]{\#},
+  morestring=[b]", 
+  alsoletter={-},
+  morekeywords=[2]{postorb,postwfn,diabat-fphd,diabat-gmh,diabat-fcd,diabat-fed,diabat-fedfcd,diabat-utils-phasefix,statepack,stateset,mopack,statepack-ref,statepack-target,statepack-1,statepack-2,statepack-3},
+}
+
+\lstnewenvironment{lst-script}[1][]{
+  \lstset{
+  backgroundcolor=\color{backgray},
+  commentstyle=\color{mygreen},
+  keywordstyle=\color{blue},
+  keywordstyle=[2]\color{magenta},
+  numberstyle=\tiny\color{mygray},
+  stringstyle=\color{myredstring},
+  breakatwhitespace=false,
+  breaklines=true,
+  keepspaces=true,
+  numbers=none,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
+  language=script,
+  moredelim=[is][\color{magenta}]{<}{>},
+  literate={\$}{{{\color{blue}\$}}}1 {~}{{{$\sim$}}}2,
+  escapechar=@
+  %aboveskip=1.5ex,
+  %belowskip=-4ex
+  %\textasciitilde
+  }
+}{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compatibility aliases for future source cleanup. These do not affect current
+% output unless authors choose to use them in new chapters.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstnewenvironment{ShellBlock}{\lstset{
+  backgroundcolor=\color{backgray}, commentstyle=\color{mygreen}, keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{mygray}, stringstyle=\color{myredstring}, basicstyle=\ttfamily\small,
+  breakatwhitespace=false, breaklines=true, captionpos=b, keepspaces=true, numbers=none,
+  numbersep=5pt, showspaces=false, showstringspaces=false, showtabs=false, tabsize=2, escapechar=@
+}}{}
+\lstnewenvironment{DiabatScript}[1][]{\lstset{
+  backgroundcolor=\color{backgray}, commentstyle=\color{mygreen}, keywordstyle=\color{blue},
+  numberstyle=\tiny\color{mygray}, stringstyle=\color{myredstring}, breakatwhitespace=false,
+  breaklines=true, keepspaces=true, numbers=none, numbersep=5pt, showspaces=false,
+  showstringspaces=false, showtabs=false, tabsize=2,
+  basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont, language=script,
+  moredelim=[is][\color{magenta}]{<}{>}, literate={\$}{{{\color{blue}\$}}}1 {~}{{{$\sim$}}}2, escapechar=@
+}}{}
+
+% File listings use the exact same visual parameters as the original lst-script blocks.
+\lstdefinestyle{diabatfile}{
+  backgroundcolor=\color{backgray},commentstyle=\color{mygreen},
+  keywordstyle=\color{blue},keywordstyle=[2]\color{magenta},
+  stringstyle=\color{myredstring},basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
+  breakatwhitespace=false,breaklines=true,keepspaces=true,numbers=none,
+  showspaces=false,showstringspaces=false,showtabs=false,tabsize=2,
+  language=script,moredelim=[is][\color{magenta}]{<}{>},escapechar=@,
+  literate={\$}{{{\color{blue}\$}}}1
+}
+\lstdefinestyle{technicalfile}{
+  backgroundcolor=\color{backgray},commentstyle=\color{mygreen},
+  stringstyle=\color{myredstring},basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
+  breaklines=true,keepspaces=true,numbers=none,showstringspaces=false,
+  morecomment=[l]{\#},morestring=[b]"
+}

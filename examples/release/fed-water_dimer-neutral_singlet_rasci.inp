@@ -1,0 +1,31 @@
+## This is an example of the input file for $diabat-fed job.
+## Diabatization including 2 singlet excited states (from RASCI) for water dimer
+## The singlet ground state is set as the reference state
+
+# FED job block
+$diabat-fed
+
+  # mo and state files
+  $$statepack
+
+    mofile = "PATH_of_diabat/data/water_dimer_rasci/singlet/water_singlet.fchk"
+    statefile = "PATH_of_diabat/data/water_dimer_rasci/singlet/water_singlet.out"
+
+    # read 3 electronic states, where the first one is the ground state (reference
+    # state), and the other 2 are singlet excited states for diabatization
+    state_index = 1..3
+
+  $$
+
+  # fragment definition
+  $$frag
+    num_frag = 2
+    frag 1 = 1..3
+    frag 2 = 4..6
+  $$
+
+  # set the first state (in reading order) as reference state
+  refid = 1
+
+$ # end of FED job block
+

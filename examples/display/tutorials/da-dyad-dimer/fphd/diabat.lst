@@ -1,0 +1,20 @@
+@\examplenum{tutorial-dyad}@
+###
+
+$diabat-fphd
+
+  $$statepack
+    mofile = "../tddft/dimer.fchk"
+    statefile = "../tddft/dimer.log"
+    state_index = 1..12
+  $$
+
+  $$<frag>
+    num_frag = 4
+    frag 1 = 1..22     # monomer 1 - donor unit
+    frag 2 = 23..130   # monomer 1 - bridge-acceptor-bridge unit
+    frag 3 = 131..152  # monomer 2 - donor unit
+    frag 4 = 153..260  # monomer 2 - bridge-acceptor-bridge unit
+  $$
+
+$

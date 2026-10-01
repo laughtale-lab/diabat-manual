@@ -1,0 +1,20 @@
+## This is an example of the input file for $postwfn
+## Calculate ground-excited and excited-excited state transition electric dipole moments
+
+# electronic state wavefunction post-processing job block
+$postwfn
+
+  # mo and state files
+  $$statepack
+
+    mofile = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.fchk"
+    statefile = "PATH_of_diabat/data/ethylene_tddft/dimer/ethylene_dimer.log"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 13:19:2
+
+  $$
+
+  # calculate transition electric dipole moment
+  trans_elec_dipo = .true.
+
+$
+

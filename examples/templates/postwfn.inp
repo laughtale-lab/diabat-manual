@@ -1,0 +1,57 @@
+## This is an example of the input file for $postwfn
+
+# postwfn job block
+$postwfn
+
+  # mo and state files
+  $$statepack
+    mofile=  "path/to/mofile"
+    statefile=  "path/to/electronic_state_file"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 14:18:2
+    #method = "CIS"       # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+## Keywords for printing wave functions in various format
+#
+#  print_wfn = .true.        # print wave functions in Diabat format
+#  print_wfn_gauss = .true.  # print wave functions in Gaussian format
+#  print_wfn_qchem = .true.  # print wave functions in Q-Chem format
+
+## Keywords for density-matrix tasks
+#
+#  nat_orb = .true.              # calculate and print natural orbitals
+#  permanent_dipo = .true.       # calculate permanent dipole moment
+#  permanent_multipole = .true.  # calculate permanent multipole moment for user-assigned moment
+#  elec_dens = .true.            # calculate total electron density and print in cube file format
+#  spin_dens = .true.            # calculate spin density and print in cube file format
+
+## Keywords for transition-density-matrix (TDM) tasks
+#
+#  nat_trans_orb = .true.       # calculate and print natural transition orbitals
+#  trans_elec_dipo = .true.     # calculate transition electric dipole moment
+#  trans_magnet_dipo = .true.   # calculate transition magnetic dipole moment
+#  trans_veloc_dipo = .true.    # calculate transition velocity dipole moment
+#  trans_multi_moment = .true.  # calculate transition multipole moment for user-assigned moment
+#  trans_dens = .true.          # calculate transition density and print in cube file format
+#  hole_dens = .true.           # calculate hole density and print in cube file format
+#  particle_dens = .true.       # calculate particle density and print in cube file format
+
+## Keywords for difference-density-matrix (DDM) tasks
+#
+#  nat_diff_orb = .true.  # calculate and print natural difference orbitals
+#  diff_dens = .true.     # calculate difference density and print in cube file format
+#  detach_dens = .true.   # calculate detachment density and print in cube file format
+#  attach_dens = .true.   # calculate attachment density and print in cube file format
+
+#  refid = 1  # ID of reference state in reading order (required by DDM and TDM tasks)
+              # for CIS/TDDFT, ground state is set as reference if refid is not given
+
+#  ngrid = 1720000  # total number of grid points in cube files (default = 1720000)
+#  moment = 2,1,1   # user-assigned multipole moment (only for trans_multi_moment=.true. .or. permanent_multipole=.true.)
+
+#  outdir = "postwfn.out"  # output directory
+#  prefix = "prefix"       # prefix of output files
+
+$
+

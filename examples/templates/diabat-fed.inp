@@ -1,0 +1,35 @@
+## This is an example of the input file for Diabat program.
+## The symbol # represents comment.
+
+
+# diabatization by two-state FED method
+$diabat-fed
+
+  # mo and state files
+  $$statepack
+    mofile=  "path/to/mofile"
+    statefile=  "path/to/electronic_state_file"
+    state_index = 1, 2  # Example format: 1,2 (FED is a two-state method)
+    #method = "TDHF"      # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+  # fragment definition
+  $$frag
+      num_frag = 2
+      frag 1 = 1..30  # Example format: 1, 2:5, 6..10, 14:18:2
+      frag 2 = 31..60
+  $$
+
+  # following are optional keywords
+
+  #adiabatic_hamiltonian = "path/to/custom/adiabatic_hamiltonian_file.dat"  # name of the file storing custom adiabatic hamiltonian matrix
+
+  #refid = 1                # ID of reference state (required for QC methods other than TDDFT)
+  #diabat_wfn = .false.     # print diabatic wavefunction (default=.true.)
+  #partition = "lowdin"     # partition scheme for calculating fragment overlap matrices
+  #partial_diag = .false.   # perform partial diagonalization (default=.true.)
+  #outdir = "fed.out"       # path of output directory
+  #tmpdir = "fed.tmp"       # path of temporary file directory
+
+$

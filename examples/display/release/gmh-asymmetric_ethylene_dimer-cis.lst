@@ -1,0 +1,26 @@
+@\examplenum{gmh-asymmetric-ethylene-dimer-cis}@
+## This is an example of the input file for @\textcolor{mygreen}{\$}@diabat-gmh job.
+## Hole transfer coupling in a cationic asymmetric ethylene dimer based on CIS calculations
+
+# GMH job block
+$diabat-gmh
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/asymmetric_ethylene_dimer/cis/cationic.in.fchk"
+    statefile = "PATH_of_diabat/data/asymmetric_ethylene_dimer/cis/cationic.out"
+    state_index = 0, 1  # include the first 2 doublet states for diabatization
+                        # 0 corresponds to the reference ground state, 1 corresponds to the first excited state
+  $$
+
+  # fragment definition
+  $$<frag>
+    num_frag = 2
+    frag 1 = 1..6
+    frag 2 = 7..12
+  $$
+
+  partition = "mulliken"
+
+$ # end of GMH job block
+

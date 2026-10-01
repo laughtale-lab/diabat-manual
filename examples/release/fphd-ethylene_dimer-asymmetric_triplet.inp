@@ -1,0 +1,24 @@
+## This is an example of the input file for $diabat-fphd job.
+## Triplet-triplet EET coupling in an asymmetric ethylene dimer based on CIS calculations
+
+# FPHD job block
+$diabat-fphd
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/asymmetric_ethylene_dimer/cis/neutral-triplet.in.fchk"
+    statefile = "PATH_of_diabat/data/asymmetric_ethylene_dimer/cis/neutral-triplet.out"
+    state_index = 1, 2  # include the first 2 triplet states for diabatization
+  $$
+
+  # fragment definition
+  $$frag
+    num_frag = 2
+    frag 1 = 1..6
+    frag 2 = 7..12
+  $$
+
+  partition = "mulliken"
+
+$ # end of FPHD job block
+

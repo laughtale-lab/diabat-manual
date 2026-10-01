@@ -1,0 +1,33 @@
+## This is an example of the input file for Diabat program.
+## The symbol # represents comment.
+
+
+# diabatization by multistate GMH method
+$diabat-gmh
+
+  # mo and state files
+  $$statepack
+    mofile=  "path/to/mofile"
+    statefile=  "path/to/electronic_state_file"
+    state_index = 1..8  # Example format: 1, 2:5, 6..10, 14:18:2
+    #method = "RASCI"     # (optional) user-specified quantum chemical method
+    #config_cutoff = 0.0  # (optional) only configurations with absolute coefficients larger than this value are read.
+  $$
+
+  # fragment definition
+  $$frag
+      num_frag = 2
+      frag 1 = 1..30  # Example format: 1, 2:5, 6..10, 14:18:2
+      frag 2 = 31..60
+  $$
+
+  # following are optional keywords
+
+  #adiabatic_hamiltonian = "path/to/custom/adiabatic_hamiltonian_file.dat"  # name of the file storing custom adiabatic hamiltonian matrix
+
+  #diabat_wfn = .false.    # print diabatic wavefunction (default=.true.)
+  #partial_diag = .false.   # perform partial diagonalization (default=.true.)
+  #outdir = "gmh.out"      # path of output directory
+  #tmpdir = "gmh.tmp"      # path of temporary file directory
+
+$

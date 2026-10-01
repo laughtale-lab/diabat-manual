@@ -1,0 +1,25 @@
+## This is an example of the input file for $diabat-fphd job.
+## Singlet-singlet EET coupling in an asymmetric formaldehyde dimer based on TDDFT calculations
+
+# FPHD job block
+$diabat-fphd
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/formaldehyde_dimer/tddft.in.fchk"
+    statefile = "PATH_of_diabat/data/formaldehyde_dimer/tddft.out"
+    state_index = 1, 2  # include the first 2 singlet excited states for diabatization
+    method = "TDDFT"
+  $$
+
+  # fragment definition
+  $$frag
+    num_frag = 2
+    frag 1 = 1..4
+    frag 2 = 5..8
+  $$
+
+  partition = "mulliken"
+
+$ # end of FPHD job block
+

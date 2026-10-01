@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\progname}{\textbf{Diabat}}
+\newcommand{\exec}{diabat}
+\newcommand{\Sec}[1]{Sec.\,\ref{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Keyword description block
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\OpTrue}{{.true.}}
+\newcommand{\OpFalse}{{.false.}}
+\newcommand{\OpInt}{INTEGER}
+\newcommand{\OpReal}{REAL}
+\newcommand{\OpLogic}{LOGICAL}
+\newcommand{\OpString}{STRING}
+\newcommand{\OpIntseq}{INTEGER SEQUENCE}
+\newcommand{\OpRealseq}{REAL SEQUENCE}
+\newcommand{\OpNone}{NONE}
+\newcommand{\OpOptional}{OPTIONAL}
+\newcommand{\OpRequired}{REQUIRED}
+
+\definecolor{keywordcolor}{rgb}{0.2,0.2,0.2}
+\definecolor{backgray}{gray}{0.95}
+
+\newcommand{\keyref}[2]{%
+  {\hypersetup{linkcolor=black}\hyperlink{#1}{\texttt{#2}}}
+}
+
+
+% ¶¨ÒåÒ»¸öÐÂÃüÁîÀ´´´½¨Ò»¸ö¹Ø¼ü´ÊÃèÊö
+\newcommand{\keyword}[9]{
+    {
+    \renewcommand{\arraystretch}{1.35}% ÉèÖÃÐÐ¼ä¾à
+    \fontsize{10pt}{10pt}\selectfont % ÉèÖÃ×ÖÌå´óÐ¡ºÍÐÐ¾à
+    \fontfamily{ptm}\selectfont % ÉèÖÃ×ÖÌåÎª Times
+    \begin{longtable}{p{0.12\textwidth} p{0.78\textwidth}}
+        \rowcolor{backgray}\textcolor{keywordcolor}{\textbf{Identifier}} & \raisebox{0pt}[0pt][0pt]{\hypertarget{#1}{\texttt{#2}}} \\
+        \textcolor{keywordcolor}{\textbf{Description}} & #3 \\
+        \textcolor{keywordcolor}{\textbf{Necessity}} & #4 \\
+        \textcolor{keywordcolor}{\textbf{Data Type}} & #5 \\
+        \textcolor{keywordcolor}{\textbf{Default}} & #6 \\
+        \textcolor{keywordcolor}{\textbf{Options}} &  #7 \\
+        \textcolor{keywordcolor}{\textbf{Suggestion}} & #8  \\
+        \textcolor{keywordcolor}{\textbf{Example}} & \texttt{#9}
+    \end{longtable}
+    \vspace{-0.2cm}
+    }
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Semantic aliases for future chapters. Existing macros are preserved exactly.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\let\ProgramName\progname
+\let\ExecutableName\exec
+\let\KeywordEntry\keyword
+\let\ScriptCaption\scriptnum
+\let\ExampleCaption\examplenum
+
+\newcommand{\InternalNote}[1]{%
+  \ifinternalmanual
+  \begin{quote}
+  \textbf{Internal note.} #1
+  \end{quote}
+  \fi
+}
+
+% Clickable keyword overview using the original keyword table hyperlink targets.
+\newenvironment{keywordoverview}{%
+  \begin{longtable}{p{0.34\textwidth}p{0.54\textwidth}}
+  \rowcolor{backgray}\textbf{Keyword} & \textbf{Purpose}\\\hline
+}{\end{longtable}}
+\newcommand{\keyitem}[3]{\keyref{#1}{#2} & #3\\}
+
+% Output filename entries are numbered within each section.  The heading and
+% its description share the same indentation and cannot be separated at a page
+% boundary.  Typography uses the existing body size and a bold mono filename.
+\newcounter{outputfile}[section]
+\newcommand{\outputfile}[2]{%
+  \refstepcounter{outputfile}%
+  \par\addvspace{0.48\baselineskip}%
+  \begin{list}{\textcolor{keywordcolor}{\arabic{outputfile}.}}{%
+    \setlength{\leftmargin}{2.05em}%
+    \setlength{\labelwidth}{1.35em}%
+    \setlength{\labelsep}{0.7em}%
+    \setlength{\topsep}{0pt}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\partopsep}{0pt}%
+  }
+    \item \begin{minipage}[t]{\linewidth}%
+      \noindent{\ttfamily\bfseries\detokenize{#1}}\par\nobreak
+      \vspace{0.06\baselineskip}%
+      \noindent #2\par
+    \end{minipage}%
+  \end{list}\par\addvspace{0.38\baselineskip}%
+}
+% A consistent unindented heading precedes each reproduced input listing.
+\newcommand{\exampleheading}[1]{%
+  \par\addvspace{0.35\baselineskip}%
+  \noindent\textbf{#1}\par\nobreak
+}
+\newcommand{\examplepath}[1]{%
+  \noindent{\footnotesize\path{#1}}\par\nobreak\smallskip
+}

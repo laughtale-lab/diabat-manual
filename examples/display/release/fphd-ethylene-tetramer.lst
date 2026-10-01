@@ -1,0 +1,25 @@
+@\examplenum{fphd-tetramer}@
+## This is an example of the input file for @\textcolor{mygreen}{\$}@diabat-fphd job.
+## Diabatization including 16 electronic excited states (from TDDFT) for ethylene tetramer
+
+# FPHD job block
+$diabat-fphd
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/ethylene_tddft/tetramer/ethylene_tetramer.fchk"
+    statefile = "PATH_of_diabat/data/ethylene_tddft/tetramer/ethylene_tetramer.log"
+    state_index = 1..16  # include the first 16 excited states for diabatization
+  $$
+
+  # fragment definition
+  $$<frag>
+    num_frag = 4
+    frag 1 = 1..6
+    frag 2 = 7..12
+    frag 3 = 13..18
+    frag 4 = 19..24
+  $$
+
+$ # end of FPHD job block
+

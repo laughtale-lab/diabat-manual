@@ -1,0 +1,48 @@
+## This is an example of the input file for diabatic program.
+## The symbol # represents comment.
+
+# orbital post-processing module
+$postorb
+
+  # path of MO files
+  $$mopack
+    num_file = 2
+    mofile 1 = "path/to/first/mofile"
+    mofile 2 = "path/to/second/mofile"
+  $$
+
+#  mofile = "path/to/single/mofile"
+
+## Keywords for printing AO and MO information
+#
+#  print_ao = .true.         # print AO information
+#  print_mo = .true.         # print MO information
+#  print_mo_fchk = .true.    # print MO information in fchk format
+#  print_mo_molden = .true.  # print MO information in molden format
+
+## Keywords for calculating various integral matrix in AO and MO basis
+#
+#  ovlp_inte = .true.         # calculate overlap integral matrix (for both AO and MO)
+#  dipo_inte = .true.         # calculate electric dipole integral matrix (for both AO and MO)
+#  magnet_dipo_inte = .true.  # calculate magnetic dipole integral matrix (for both AO and MO)
+#  velo_inte = .true.         # calculate velocity integral matrix (for both AO and MO)
+#  moment_inte = .true.       # calculate integral matrix for user-assigned multipole moment (for both AO and MO)
+#  moment = 1,0,0             # user-assigned multipole moment for integral matrix calculation, (n,m,l) represents X^n Y^m Z^l
+
+## Keywords for calculating various density cubes
+#
+#  ao_cube = .true.    # generate cube files of selected AO wavefunctions
+#  mo_cube = .true.    # generate cube files of selected MO wavefunctions
+#  elec_dens = .true.  # generate cube file of total electron density
+#  spin_dens = .true.  # generate cube file of spin density
+#  ngrid = 1720000     # total number of grid points in cube files (default = 1720000)
+
+#  ao_id = 1, 6..15, 186..195  # ID of selected AOs for ao_cube task
+#  mo_id = 43..45              # ID of selected MOs for mo_cube task
+
+#  lowdin = .true.  # construct orthonormal Lowdin AO basis
+
+#  outdir = "postorb.out"  # output directory
+#  prefix = "prefix"       # prefix of output files
+
+$

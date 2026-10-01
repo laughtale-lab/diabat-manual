@@ -1,0 +1,23 @@
+@\examplenum{gmh-donor-acceptor}@
+## This is an example of the input file for @\textcolor{mygreen}{\$}@diabat-gmh job.
+## Diabatization including 4 electronic excited states (from TDDFT) for asymmetric donor-acceptor system
+
+# Multistate GMH job block
+$diabat-gmh
+
+  # mo and electronic state files
+  $$statepack
+    mofile = "PATH_of_diabat/data/donor_acceptor/donor_acceptor.fchk"
+    statefile = "PATH_of_diabat/data/donor_acceptor/donor_acceptor.log"
+    state_index = 1..4  # include the first 4 excited states for diabatization
+  $$
+
+  # fragment definition
+  $$<frag>
+    num_frag = 2
+    frag 1 = 1..10
+    frag 2 = 11..14
+  $$
+
+$ # end of Multistate GMH job block
+

@@ -1,0 +1,37 @@
+@\examplenum{tutorial-cation-quartet}@
+### cationic trimer
+
+$diabat-fphd
+
+  $$statepack
+    num_state_pack = 2
+
+    $$$statepack-1
+      mofile = "../casscf/neutral-66/orca.molden.input"
+      statefile = "../casscf/neutral-66/orca.log"
+      state_index = 1
+    $$$
+
+    $$$statepack-2
+      mofile = "../casscf/cationic-quartet-56-nroot-13/orca.molden.input"
+      statefile = "../casscf/cationic-quartet-56-nroot-13/orca.log"
+      state_index = 1..13
+    $$$
+  $$
+
+  $$<frag>
+    num_frag = 3
+    frag 1 = 1..30
+    frag 2 = 31..60
+    frag 3 = 61..90
+  $$
+
+  multiexcite = .true.
+  refid = 1
+  density_cube = .true.
+
+  refnp = 0.6, 0.6, 0.6
+  refnh = 0.6, 0.6, 0.6
+  print_spin_fphn = .true.
+
+$

@@ -1,0 +1,27 @@
+@\examplenum{postwfn-detach-attach-water-singlet-adia}@
+## This is an example of the input file for @\textcolor{mygreen}{\$}@postwfn
+## Generate detachment and attachment density cube files for water dimer singlet excited states
+## The singlet ground state is set as the reference state
+
+# electronic state wavefunction post-processing job block
+$postwfn
+
+  # mo and state files
+  $$statepack
+
+    mofile = "PATH_of_diabat/data/water_dimer_rasci/singlet/water_singlet.fchk"
+    statefile = "PATH_of_diabat/data/water_dimer_rasci/singlet/water_singlet.out"
+
+    # read 5 electronic states, where the first one is the ground state
+    state_index = 1..5
+
+  $$
+
+  diff_dens = .true.  # calculate difference density and print in cube file format
+  detach_dens = .true.  # calculate detachment density and print in cube file format
+  attach_dens = .true.  # calculate attachment density and print in cube file format
+
+  refid = 1  # set the first state (in reading order) as reference state
+
+$
+
