@@ -116,6 +116,10 @@ def audit_sources(book, report):
 
 
 def audit_site(site, pdf):
+    # target_of() and the HTML cache use absolute paths; normalize the root
+    # before relative_to() so errors report the actual missing link/anchor.
+    site = site.resolve()
+    pdf = pdf.resolve()
     for target in ('index.html','diabat.pdf','diabat.css','diabat-highlight.js',
                    'searchindex.js', 'diabatization.html','references.html','build-info.json'):
         if not (site / target).is_file() or not (site / target).stat().st_size:
