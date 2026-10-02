@@ -38,3 +38,5 @@
 __pycache__/
 .pytest_cache/
 .DS_Store
+# Add the following line to your *existing* .gitignore. Do not replace the file.
+/.ci-tools/

@@ -1,0 +1,115 @@
+name: Preview Manual PDF + mdBook (no deployment)
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: Build & audit joint release without publishing
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Manual candidate sources
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compile original LaTeX, unmodified
+        uses: xu-cheng/texlive-action@v3
+        with:
+          texlive_version: '2025'
+          os: debian
+          run: bash tools/build-pdf.sh
+
+      - name: Install host PDF validation utilities
+        run: |
+          if ! command -v pdfinfo >/dev/null || ! command -v pdftotext >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y poppler-utils
+          fi
+
+      - name: Validate PDF
+        run: python3 tools/validate-pdf.py main.pdf --min-pages 100
+
+      - name: Run integration gate unit tests
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Validate pinned converter SHA
+        id: converter_ref
+        shell: bash
+        run: echo "sha=$(python3 tools/check-latex2md-pin.py)" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout reviewed public latex2md commit
+        uses: actions/checkout@v4
+        with:
+          repository: laughtale-lab/latex2md
+          ref: ${{ steps.converter_ref.outputs.sha }}
+          path: .ci-tools/latex2md
+          persist-credentials: false
+
+      - name: Verify checked out converter is the reviewed SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(python3 tools/check-latex2md-pin.py)"
+          actual="$(git -C .ci-tools/latex2md rev-parse HEAD)"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "Wrong latex2md commit: expected $expected; got $actual" >&2
+            exit 1
+          fi
+          echo "Confirmed pinned latex2md commit: $actual"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the reviewed converter
+        run: python3 -m pip install --no-deps .ci-tools/latex2md
+
+      - name: Convert the entire Manual and compare its reviewed baseline
+        run: |
+          python3 -m latex2md build --source . --output "$RUNNER_TEMP/diabat-book"
+          python3 -m latex2md.verify \
+            --report "$RUNNER_TEMP/diabat-book/conversion-report.json" \
+            --baseline tools/diabat-2.0-baseline.json
+          python3 tools/audit-mdbook.py sources "$RUNNER_TEMP/diabat-book"
+
+      - name: Install mdBook version verified by latex2md CI
+        uses: taiki-e/install-action@v2
+        with:
+          tool: mdbook@0.4.52
+          fallback: none
+
+      - name: Generate HTML
+        run: mdbook build "$RUNNER_TEMP/diabat-book"
+
+      - name: Stage the full candidate release, without deploying
+        shell: bash
+        env:
+          SITE_SOURCE: ${{ runner.temp }}/diabat-book/book
+          SITE_MODE: mdbook
+        run: |
+          set -euo pipefail
+          bash tools/stage-pages.sh
+          python3 tools/validate-site.py site main.pdf
+          python3 tools/audit-mdbook.py site site main.pdf
+          python3 tools/write-web-provenance.py site
+
+      - name: Upload entire candidate site for visual review (not official Pages)
+        uses: actions/upload-artifact@v4
+        with:
+          name: diabat-manual-html-preview
+          path: site/
+          include-hidden-files: true
+          if-no-files-found: error
+
+      - name: Upload conversion report separately
+        uses: actions/upload-artifact@v4
+        with:
+          name: diabat-manual-conversion-report
+          path: ${{ runner.temp }}/diabat-book/conversion-report.json
+          if-no-files-found: error

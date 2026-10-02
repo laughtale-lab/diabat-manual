@@ -1,0 +1,156 @@
+# Copy to .github/workflows/publish.yml ONLY AFTER the PR preview is reviewed.
+# Review against your current first-stage publish.yml before replacing it.
+name: Build and publish Diabat PDF + HTML
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and audit PDF + mdBook as one release
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout official Manual sources
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Compile the LaTeX PDF with fixed TeX Live 2025
+        uses: xu-cheng/texlive-action@v3
+        with:
+          texlive_version: '2025'
+          os: debian
+          run: bash tools/build-pdf.sh
+
+      - name: Install host PDF validation dependencies
+        shell: bash
+        run: |
+          if ! command -v pdfinfo >/dev/null || ! command -v pdftotext >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y poppler-utils
+          fi
+
+      - name: Validate the PDF
+        run: python3 tools/validate-pdf.py main.pdf --min-pages 100
+
+      - name: Test the first-stage publishing scripts
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Validate pinned converter SHA
+        id: converter_ref
+        shell: bash
+        run: echo "sha=$(python3 tools/check-latex2md-pin.py)" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch only the reviewed converter commit
+        uses: actions/checkout@v4
+        with:
+          repository: laughtale-lab/latex2md
+          ref: ${{ steps.converter_ref.outputs.sha }}
+          path: .ci-tools/latex2md
+          persist-credentials: false
+
+      - name: Verify checked out converter is the reviewed SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="$(python3 tools/check-latex2md-pin.py)"
+          actual="$(git -C .ci-tools/latex2md rev-parse HEAD)"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "Wrong latex2md commit: expected $expected; got $actual" >&2
+            exit 1
+          fi
+          echo "Confirmed pinned latex2md commit: $actual"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the exact converter checkout
+        run: python3 -m pip install --no-deps .ci-tools/latex2md
+
+      - name: Convert and validate all Manual content
+        run: |
+          python3 -m latex2md build --source . --output "$RUNNER_TEMP/diabat-book"
+          python3 -m latex2md.verify \
+            --report "$RUNNER_TEMP/diabat-book/conversion-report.json" \
+            --baseline tools/diabat-2.0-baseline.json
+          python3 tools/audit-mdbook.py sources "$RUNNER_TEMP/diabat-book"
+
+      - name: Install fixed mdBook 0.4.52
+        uses: taiki-e/install-action@v2
+        with:
+          tool: mdbook@0.4.52
+          fallback: none
+
+      - name: Build mdBook
+        run: mdbook build "$RUNNER_TEMP/diabat-book"
+
+      - name: Build one complete deployment tree with PDF and HTML
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          SITE_SOURCE: ${{ runner.temp }}/diabat-book/book
+          SITE_MODE: mdbook
+        run: |
+          bash tools/stage-pages.sh
+          python3 tools/validate-site.py site main.pdf
+          python3 tools/audit-mdbook.py site site main.pdf
+          python3 tools/write-web-provenance.py site
+
+      - name: Configure Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload the joint release to the Pages deployment job
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy only the newest, fully verified manual release
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: diabat-manual-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Reject stale builds after acquiring the deployment lock
+        id: freshness
+        shell: bash
+        env:
+          TARGET_SHA: ${{ github.sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          latest="$(git ls-remote "https://github.com/${REPO}.git" refs/heads/main | cut -f1)"
+          if [[ -z "$latest" ]]; then
+            echo 'ERROR: cannot obtain current main SHA' >&2
+            exit 1
+          fi
+          if [[ "$latest" == "$TARGET_SHA" ]]; then
+            echo 'publish=true' >> "$GITHUB_OUTPUT"
+          else
+            echo "Skipping stale manual: ${TARGET_SHA}; current main: ${latest}"
+            echo 'publish=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy PDF and HTML together
+        if: steps.freshness.outputs.publish == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
