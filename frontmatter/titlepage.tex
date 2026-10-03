@@ -1,11 +1,59 @@
 \begin{titlepage}
-\thispagestyle{empty}\centering
+\thispagestyle{empty}
+
+%\begin{tikzpicture}[remember picture,overlay]
+%  \fill[black] (current page.south west) rectangle (current page.north east);
+%\end{tikzpicture}
+
+\begin{tikzpicture}[remember picture,overlay]
+  \shade[top color=nighttop,bottom color=nightbottom]
+    (current page.south west) rectangle (current page.north east);
+  \fill[nightmid,opacity=0.18]
+    (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}
+
+\centering
+\color{white}
+
+%logo
 \vspace*{3.55cm}
-\includegraphics[width=11cm,keepaspectratio]{diabat-logo.png}\par
-\vspace{0.1cm}
-\includegraphics[width=0.99\textwidth,keepaspectratio]{banner-cover-trimmed.png}\par
-\vspace{0.75cm}
-{\fontsize{36pt}{42pt}\selectfont\bfseries User Manual\par}
+\makebox[\textwidth][c]{%
+  \includegraphics[
+    width=19cm,
+    keepaspectratio
+  ]{assets/logo-transparent-bold.png}%
+}\par
+%\vspace{0.2cm}
+
+% banner
+{\diabatmono
+\fontsize{10.8pt}{13pt}\selectfont
+A Comprehensive Diabatization Toolkit for Multichromophoric Systems\par
+}
+
+% developer
+\vspace{0.22cm}
+{\diabatmono
+\fontsize{10.2pt}{12.2pt}\selectfont
+Yu-Chen Wang \textbar{} Laughtale Lab\par
+}
+
+% manual
+\vspace{0.85cm}
+{\rmfamily
+\fontsize{36pt}{41pt}\selectfont
+\bfseries
+User Manual\par
+}
+
+% version
+\vspace{0.3cm}
+{\diabatmono
+\fontsize{14pt}{15pt}\selectfont
+%\bfseries
+\textls[50]{PROGRAM VERSION \manualversion{}}\par
+}
+
 \end{titlepage}
 \clearpage\thispagestyle{empty}\null\clearpage
 \thispagestyle{empty}
