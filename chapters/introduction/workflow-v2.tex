@@ -3,8 +3,18 @@ A typical calculation consists of three steps.
 \begin{enumerate}
 \item Use a supported external quantum chemistry program to calculate the adiabatic electronic states needed for the intended task. Depending on the calculation, one or several external calculations may be required. Retain the molecular orbital files and the files that contain the electronic-state wave-function data. The latter are usually the calculation log files.
 \item Prepare a \progname{} input script such as \texttt{diabat.inp}. The script specifies the computational job, the paths of the external data files, and the options required by that job.
-\item Run \progname{} with the input script and inspect the reported results. A serial calculation is started with
+\item Run \progname{} with the input script and examine the results. A serial calculation is started with
 \begin{lst-installation}
 diabat diabat.inp
 \end{lst-installation}
 \end{enumerate}
+
+The overall workflow and the relationship among the three program modules are summarized in Figure~\ref{fig:introduction-workflow}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{diabat_general_workflow.pdf}
+  \caption{Schematic workflow of computational tasks in \progname{}}
+  \label{fig:introduction-workflow}
+\end{figure}
+

@@ -12,10 +12,10 @@ The following valid indexed matrix describes a real symmetric two-state Hamilton
 2 1 0.031000000000000
 2 2 2.300000000000000
 \end{lstlisting}
-Supply this file using the \progname{} job keyword \texttt{adiabatic\_hamiltonian = "Hadi.dat"}. The matrix dimension must match the number and order of selected adiabatic states. For this keyword, each element is interpreted in electronvolts (eV). Check that the ordering is exactly the ordering of the internal states selected for diabatization.
+Supply this file using the \progname{} job keyword \texttt{adiabatic\_hamiltonian = "Hadia.dat"}. The matrix dimension must match the number and order of selected adiabatic states. For this keyword, each element is interpreted in electronvolts (eV). Check that the ordering is exactly the ordering of the internal states selected for diabatization.
 
 \section{Text files and binary files}
-A human-readable \texttt{.dat} file begins on its \emph{first line} with a single configuration header prefixed by \texttt{\#@}. Blank lines or ordinary \texttt{\#} comments may appear \emph{after} this header and before the numeric body, but not before the header. When the numeric body has started, do not insert further comment records. Header keys and values are case-insensitive. Keys are separated by whitespace and expressed as \texttt{key=value}. Unknown or repeated keys are not accepted.
+A human-readable \texttt{.dat} file begins on its \keyemph{first line} with a single configuration header prefixed by \texttt{\#@}. Blank lines or ordinary \texttt{\#} comments may appear \keyemph{after} this header and before the numeric body, but not before the header. When the numeric body has started, do not insert further comment records. Header keys and values are case-insensitive. Keys are separated by whitespace and expressed as \texttt{key=value}. Unknown or repeated keys are not accepted.
 
 A \texttt{.bin} file instead stores a four-byte signed integer giving the header length, followed by the header string itself and the contiguous binary body. The header has the same semantic form as the text header and must begin with \texttt{\#@}. The reader requires a positive header length not exceeding 1024 bytes. Numeric values use the double-precision representation of the native toolchain used to build the program. Binary files accept only contiguous, not indexed, body storage and may not be portable across incompatible architectures or toolchains.
 

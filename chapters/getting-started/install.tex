@@ -1,5 +1,5 @@
 \section{Download and installation}\label{sec-install}
-Download the Linux x86\_64 binary archive for the desired release from the \href{https://github.com/laughtale-lab/diabat/releases}{official release page}. The archive filename includes its version number. For example, the version 2.0 Linux x86\_64 release is named
+Download the binary archive for the desired release from the \href{https://github.com/laughtale-lab/diabat/releases}{official release page}. The archive filename includes its version number. For example, the version 2.0 Linux x86\_64 release is named
 \begin{lst-installation}
 diabat-v2.0-linux-x86_64.tar.gz
 \end{lst-installation}
@@ -40,9 +40,20 @@ diabat --show diabat-fphd
 This command prints information for a specified job. Replace \texttt{diabat-fphd} with another job name listed by \texttt{--module}.
 
 \subsection{Runtime libraries}\label{sec-runtime}
-The distributed executable requires compatible Intel Fortran runtime libraries, Intel Math Kernel Library (MKL) for BLAS and LAPACK, Intel MPI, and Intel OpenMP, together with standard Linux libraries. These libraries must be visible to the dynamic linker when the program starts.
+%The distributed executable requires compatible Intel Fortran runtime libraries, Intel Math Kernel Library (MKL) for BLAS and LAPACK, Intel MPI, and Intel OpenMP, together with standard Linux libraries. These libraries must be visible to the dynamic linker when the program starts.
+The distributed executable \exec{} requires the following runtime libraries, which must be visible to the dynamic linker at startup:
 
-The way these libraries are provided depends on the local computer or HPC platform. Consult the system administrator or local software documentation when the Intel runtime environment is centrally managed. On a workstation with an Intel oneAPI installation, a common approach is to initialize the Intel environment before running the program.
+\begin{itemize}[noitemsep, topsep=0pt]
+  \item Compatible Intel Fortran runtime libraries.
+  \item Intel Math Kernel Library (MKL) for BLAS and LAPACK.
+  \item Intel MPI.
+  \item Intel OpenMP runtime libraries.
+  \item Standard Linux system libraries.
+\end{itemize}
+%These libraries must be visible to the dynamic linker when \progname{} starts.
+The way these libraries are provided depends on the local computer or HPC platform. Consult the system administrator or local software documentation when the Intel runtime environment is centrally managed.
+
+On a workstation with an Intel oneAPI installation, a common approach is to initialize the Intel environment before running the program.
 \begin{lst-installation}
 source /path/to/intel/oneapi/setvars.sh
 \end{lst-installation}
@@ -50,13 +61,15 @@ If the required libraries are installed in nonstandard locations, their director
 \begin{lst-installation}
 export LD_LIBRARY_PATH="/path/to/intel/libs:$LD_LIBRARY_PATH"
 \end{lst-installation}
-On many HPC systems, the same environment is provided through site-specific modules. The exact module names vary between installations.
+On many HPC systems, the same environment is provided through site-specific modules:
 \begin{lst-installation}
 module avail
 module load intel
 module load intel-mpi
 module load mkl
 \end{lst-installation}
+The exact module names vary between installations.
+
 The executable can be checked with \texttt{ldd} after the environment has been loaded.
 \begin{lst-installation}
 ldd "$(command -v diabat)"

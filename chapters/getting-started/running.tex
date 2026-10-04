@@ -1,16 +1,16 @@
 \section{Running a job}\label{sec-running}
-\progname{} uses both MPI and OpenMP parallel programming. Serial, MPI, OpenMP, and hybrid MPI/OpenMP execution are supported. MPI parallelism is the recommended choice for most production calculations.
+\progname{} uses both MPI and OpenMP parallel programming. Serial, MPI, OpenMP, and hybrid MPI/OpenMP execution are supported. MPI parallelism is the recommended choice for most calculations.
 
 \begin{enumerate}
 \item \textbf{Serial execution.} Run the program with a single process and one thread.
 \begin{lst-installation}
 diabat diabat.inp
 \end{lst-installation}
-\item \textbf{MPI execution.} Start the required number of MPI processes using the launcher available on the local system. In this example, four MPI processes are used.
+\item \textbf{MPI execution.} Start the required number of MPI processes using the launcher available on the local system:
 \begin{lst-installation}
-export OMP_NUM_THREADS=1
 mpirun -np 4 diabat diabat.inp
 \end{lst-installation}
+In this example, four MPI processes are used.
 On an HPC system, use \texttt{mpiexec} or the launcher required by the job scheduler when appropriate.
 \item \textbf{OpenMP execution.} Select the number of threads through \texttt{OMP\_NUM\_THREADS} or the \texttt{-nt} option.
 \begin{lst-installation}
@@ -33,7 +33,7 @@ Hybrid execution is generally unnecessary unless the selected calculation spends
 If \texttt{OMP\_NUM\_THREADS} and \texttt{-nt} are both provided, the environment variable takes precedence. The default is one OpenMP thread. The installed program prints the supported execution forms with \texttt{diabat --usage}.
 
 \subsection{Standard output and error output}\label{sec-stdout}
-\progname{} writes progress information and calculation results to standard output \texttt{stdout}. Diagnostic and error messages are sent to standard error \texttt{stderr}. Both streams normally appear in the terminal.
+\progname{} writes progress information and calculation results to standard output \texttt{stdout}. Diagnostic and error messages are sent to standard error \texttt{stderr}. Both streams normally appear in the \keyemph{terminal}.
 
 Shell redirection can save them to separate files. For example, the following command writes normal output to \texttt{diabat.log} and error messages to \texttt{diabat.err}.
 \begin{lst-installation}
@@ -43,4 +43,5 @@ To combine both streams in one file, use
 \begin{lst-installation}
 diabat diabat.inp > diabat.log 2>&1
 \end{lst-installation}
-These redirections may also be used with parallel runs. Individual jobs can additionally create numerical data and wave-function files in their selected output directories.
+These redirections can also be used for parallel runs.
+Individual jobs may additionally create numerical data and wave-function files in their selected output directories.

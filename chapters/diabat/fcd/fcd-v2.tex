@@ -1,12 +1,13 @@
 \section{FCD}\label{sec-fcd}
 \subsection{Background}
-The fragment charge difference (FCD) method constructs charge-localized quasi-diabatic states from the difference in electronic charge assigned to two molecular fragments~\cite{Voityuk-JCP-2002-p5607,Yang-JCP-2013-p154104}. In contrast to GMH, FCD does not require a dipole-projection direction. The descriptor is built directly from fragment-resolved one-particle density and transition-density information together with the nuclear charges of the two fragments.
+The fragment charge difference (FCD) method constructs charge-localized quasi-diabatic states from the difference in electronic charge assigned to two molecular fragments~\cite{Yang-JCP-2013-p154104,Voityuk-JCP-2002-p5607}. In contrast to GMH, FCD does not require a dipole-projection direction. The descriptor is built directly from fragment-resolved one-particle density and transition-density information together with the nuclear charges of the two fragments.
 
 For each pair of adiabatic states, \progname{} evaluates a charge-difference matrix. Its diagonal elements are the charge difference between the two fragments for the individual adiabatic states. Its off-diagonal elements contain the corresponding transition-density contribution. Diagonalizing this matrix gives an intermediate representation that maximizes separation with respect to the fragment charge difference. The eigenvalues of the descriptor matrix are then used to identify the physical direction of charge localization.
 
 The implementation follows a multistate treatment. To use the same classification procedure for neutral and charged systems, \progname{} shifts the descriptor eigenvalues by the total molecular charge in units of the elementary charge. A shifted value below -1 identifies electron transfer from fragment 2 to fragment 1. A shifted value above 1 identifies the opposite transfer direction. Intermediate values are treated as non-CT character. When several states belong to the same class, the Hamiltonian is partially diagonalized within that class to remove mixing that the charge-difference descriptor alone does not determine.
 
-The public implementation accepts multiple adiabatic states but uses exactly two molecular fragments. FCD is intended for charge-transfer problems. For excitation energy transfer without the corresponding charge-separation character, FED or another suitable method should be used instead.
+The public implementation accepts multiple adiabatic states but uses exactly two molecular fragments. FCD is intended for charge-transfer problems.
+%For excitation energy transfer without the corresponding charge-separation character, FED or another suitable method should be used instead.
 
 \subsection{Job Control}
 Start the job with the following first-level block. Add the \texttt{statepack} and \texttt{frag} blocks described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
@@ -20,10 +21,10 @@ $
 The following table lists the keywords commonly used in an FCD job.
 \begin{keywordoverview}
 \keyitem{key-statepack-statefile}{statefile}{Electronic-state data file in \texttt{statepack}.}
-\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken fragment populations.}
+\keyitem{key-common-partition}{partition}{Select fragment population partitioning scheme.}
 \keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read an optional adiabatic Hamiltonian in eV.}
 \keyitem{key-common-partial_diag}{partial\_diag}{Control partial diagonalization within state classes.}
-\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the quasi-diabatic wave functions.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the constructed quasi-diabatic wave functions.}
 \keyitem{key-common-outdir}{outdir}{Set the output directory.}
 \keyitem{key-common-tmpdir}{tmpdir}{Set the temporary directory.}
 \end{keywordoverview}
@@ -38,7 +39,7 @@ Besides the common output files in Section~\ref{sec-diabat-output}, the job writ
 The standard output also reports the CT descriptors and the resulting state classes.
 
 \subsection{Examples}
-The following input scripts are taken from the public distribution. Install the corresponding data before running them.
+The following input scripts are taken from the public distribution. Check the existence of the corresponding data files before running the scripts.
 
 \exampleheading{Donor--acceptor dimer, TDDFT}
 \examplepath{examples/diabat/fcd/donor_acceptor/diabat.inp}

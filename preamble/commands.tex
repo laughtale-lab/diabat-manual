@@ -1,7 +1,44 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\progname}{\textbf{Diabat}}
-\newcommand{\exec}{diabat}
+% program name style
+\newcommand{\proglinewidth}{0.5pt}
+
+\newcommand{\progchar}[2]{%
+  \begingroup
+  \colorlet{progfill}{white!#2!black}%
+  \pdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth=\proglinewidth,
+    FillColor=progfill,
+    StrokeColor=black
+  }{#1}%
+  \endgroup
+}
+
+\DeclareRobustCommand{\progname}{%
+  \scalebox{0.85}{%
+    {\fontfamily{qcs}\fontseries{m}\selectfont
+      \progchar{D}{50}%
+      i%
+      a%
+      \progchar{b}{50}%
+      a%
+      \progchar{t}{50}%
+    }%
+  }%
+}
+
+\newcommand{\exec}{\texttt{diabat}}
 \newcommand{\Sec}[1]{Sec.\,\ref{#1}}
+
+\newcommand{\manualnote}[1]{%
+  {#1}%
+}
+
+% key text to emphasize
+\definecolor{keyemphgray}{gray}{0.25}
+\newcommand{\keyemph}[1]{%
+  \textcolor{keyemphgray}{\emph{#1}}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Keyword description block

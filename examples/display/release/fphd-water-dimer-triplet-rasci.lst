@@ -1,7 +1,7 @@
 @\examplenum{fphd-water-triplet-rasci}@
 ## This is an example of the input file for @\textcolor{mygreen}{\$}@diabat-fphd job.
 ## Diabatization including 20 triplet states (from RASCI) for water dimer
-## Multi-excitation implementation is activated
+## Multi-excitation implementation is activated automatically
 ## The singlet ground state is set as the reference state
 
 # FPHD job block
@@ -38,8 +38,6 @@ $diabat-fphd
     frag 2 = 4..6
   $$
 
-  # activate multi-excitation implementation
-  multiexcite = .true.
   # set the first state (in reading order) as reference state
   refid = 1
 

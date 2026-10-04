@@ -1,0 +1,50 @@
+\subsection{Keyword value types}
+\label{sec-keyword-value-types}
+
+A keyword value has one of six basic data types. The type accepted by each keyword is given in its detailed description. Keyword-specific restrictions, such as allowed ranges or the required number of values, apply in addition to the general syntax described below.
+
+\begin{enumerate}
+
+\item \textbf{Integers.}
+An integer value is written as a whole number, for example,
+\begin{lst-script}
+num_frag = 4
+\end{lst-script}
+Whether zero or negative values are allowed depends on the individual keyword.
+
+\item \textbf{Real numbers.}
+A real value may be written in decimal or scientific notation. For example,
+\begin{lst-script}
+svdmin = 0.0001
+jacobi_thr = 1.0e-8
+\end{lst-script}
+The accepted numerical range is determined by the individual keyword.
+
+\item \textbf{Logical values.}
+A logical value is written as \texttt{.true.} or \texttt{.false.}. For example,
+\begin{lst-script}
+partial_diag = .false.
+\end{lst-script}
+
+\item \textbf{Character strings.}
+A character value may be written without quotes or enclosed in single or double quotes. The examples in this manual generally use double quotes. Quoting is particularly useful for file paths and other values containing spaces or characters that could otherwise be ambiguous. For example,
+\begin{lst-script}
+method = "TDDFT"
+outdir = "fphd.out"
+\end{lst-script}
+
+\item \textbf{Integer sequences.}
+An integer sequence consists of individual integers, ranges, or a mixture of both. Individual values are separated by commas. A consecutive inclusive range may be written as \texttt{i..j} or \texttt{i:j}, and a range with an explicit step as \texttt{i:j:step}. For example,
+\begin{lst-script}
+state_index = 1, 3..5, 8:12:2, 20
+\end{lst-script}
+selects \texttt{1, 3, 4, 5, 8, 10, 12, 20}. The values may be listed in any order. A range may run upward or downward when the step has the appropriate sign. A zero step is invalid.
+
+\item \textbf{Real sequences.}
+A real sequence is written as a comma-separated list of real values. For example,
+\begin{lst-script}
+refnp = 0.6, 0.7
+\end{lst-script}
+The required number of values and their allowed ranges are specified by the individual keyword.
+
+\end{enumerate}

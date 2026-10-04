@@ -1,5 +1,5 @@
 \section{Job Control}\label{sec-postorb-job}
-The module is invoked through the \texttt{\$postorb} block. Supply exactly one \keyref{key-statepack-mofile}{mofile} or one \texttt{\$\$mopack} block. Enable the required analysis options and, for orbital-resolved outputs, supply the AO or MO indices. Multiple orbital files are useful for inter-file overlap and related property calculations. See the keyword tables and the examples in Section~\ref{sec-postorb-examples} for concrete inputs.
+The module is invoked through the \texttt{\$postorb} block. Supply exactly one \keyref{key-statepack-mofile}{mofile} or one \texttt{\$\$mopack} block. Enable the required analysis options and, for orbital-resolved outputs, supply the AO or MO indices. Multiple orbital files are required for inter-file overlap and related property calculations. See the keyword tables below and the examples in Section~\ref{sec-postorb-examples} for concrete inputs.
 \begin{lst-script}[escapechar=@]
 @\scriptnum{script-postorb-job}@
 $postorb
@@ -23,7 +23,7 @@ The table below is a quick index of the available \texttt{postorb} keywords. Cli
 \keyitem{key-postorb-moment}{moment}{Specify Cartesian multipole powers.}
 \keyitem{key-postorb-ao_cube}{ao\_cube}{Export AO cube files.}
 \keyitem{key-postorb-mo_cube}{mo\_cube}{Export MO cube files.}
-\keyitem{key-postorb-lowdin}{lowdin}{Calculate the Loewdin AO representation.}
+\keyitem{key-postorb-lowdin}{lowdin}{Calculate the L\"{o}wdin AO representation.}
 \keyitem{key-postorb-elec_dens}{elec\_dens}{Export electron-density cubes.}
 \keyitem{key-postorb-spin_dens}{spin\_dens}{Export spin-density cubes.}
 \keyitem{key-postorb-ngrid}{ngrid}{Set the visualization grid size.}

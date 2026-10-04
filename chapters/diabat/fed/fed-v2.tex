@@ -4,9 +4,11 @@ The fragment excitation difference (FED) method was developed for excitation ene
 
 The standalone FED job in \progname{} implements the conventional two-state formulation. Exactly two target adiabatic states are included in one FED transformation. For a general electronic-state representation, the program varies the two-state mixing angle and searches for the transformation that maximizes the absolute difference between the two FED descriptors. For single-excitation theories, the transition density between two excited states can be separated into attachment-like and detachment-like contributions. This gives an interstate excitation-difference quantity and permits an equivalent matrix treatment.
 
-A reference state is required because the excitation descriptor is defined from a density change. For CIS, TDA, TDHF, TDDFT, and TDA-aTB wave functions, the underlying reference ground state can be used automatically when no loaded reference is selected. For other wave-function types, the reference must be loaded explicitly and selected with \keyref{key-fphd-refid}{refid}. The reference and target calculations must use the same molecular geometry and AO basis. Other computational details may differ when the resulting density matrices remain compatible.
+A reference state is required because the excitation descriptor is defined from a density change. For CIS, TDA, TDHF, TDDFT, and TDA-aTB wave functions, the underlying reference ground state can be used automatically when no loaded reference is selected. For other wave-function types, the reference must be loaded explicitly and selected with \keyref{key-fphd-refid}{refid}. The reference and target calculations must use the same molecular geometry and AO basis, while other computational details may differ.
 
-FED should be used for two-fragment excitation-energy-transfer problems. It is distinct from FCD, which uses charge difference and targets charge transfer. A multistate excitation-difference calculation is available through the \texttt{diabat-fedfcd} job with the FCD contribution disabled.
+%FED should be used for two-fragment excitation-energy-transfer problems. It is distinct from FCD, which uses charge difference and targets charge transfer. 
+The standalone FED job uses exactly two adiabatic states for diabatization.
+A multistate excitation-difference calculation is available through the \texttt{diabat-fedfcd} job with the FCD contribution disabled.
 
 \subsection{Job Control}
 Start the job with the following first-level block. Add the \texttt{statepack} and \texttt{frag} blocks described in Sections~\ref{sec-statepack} and~\ref{sec-diabat-frag}.
@@ -20,15 +22,15 @@ $
 The following table lists the principal keywords used in an FED job.
 \begin{keywordoverview}
 \keyitem{key-fphd-refid}{refid}{Select an explicitly loaded reference by internal state ID.}
-\keyitem{key-common-partition}{partition}{Select L\"owdin or Mulliken fragment populations.}
+\keyitem{key-common-partition}{partition}{Select fragment population partitioning scheme.}
 \keyitem{key-common-partial_diag}{partial\_diag}{Control the final partial diagonalization.}
 \keyitem{key-common-adiabatic_hamiltonian}{adiabatic\_hamiltonian}{Read an optional adiabatic Hamiltonian in eV.}
-\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the quasi-diabatic wave functions.}
+\keyitem{key-common-diabat_wfn}{diabat\_wfn}{Write the constructed quasi-diabatic wave functions.}
 \keyitem{key-common-outdir}{outdir}{Set the output directory.}
 \keyitem{key-common-tmpdir}{tmpdir}{Set the temporary directory.}
 \end{keywordoverview}
 \subsubsection*{Detailed keyword descriptions}
-The \keyref{key-fphd-refid}{refid} keyword uses an internal state ID as explained in Section~\ref{sec-internal-ids}. The general meaning of the keyword is given in the FPHD table in Section~\ref{sec-fphd-job}. The reference may be calculated with a different electronic-structure method or electron number, provided that its molecular geometry and AO basis are compatible with those of the target states. The standalone FED job uses exactly two target adiabatic states. Shared options are described in Section~\ref{sec-diabat-settings}.
+Shared options are described in Section~\ref{sec-diabat-settings}. The \keyref{key-fphd-refid}{refid} keyword uses an internal state ID as explained in Section~\ref{sec-internal-ids}. The general meaning of the keyword is given in the FPHD table in Section~\ref{sec-fphd-job}. The reference may be calculated with a different electronic-structure method or electron number, provided that its molecular geometry and AO basis are compatible with those of the states to be diabatized.
 \subsection{Output Data Files}
 Besides the common output files in Section~\ref{sec-diabat-output}, the job writes the fragment excitation matrices in the adiabatic representation to the \texttt{property\_matrix/} subdirectory.
 \outputfile{property_matrix/E1.dat}{Fragment-1 excitation matrix.}
@@ -38,7 +40,7 @@ Besides the common output files in Section~\ref{sec-diabat-output}, the job writ
 The standard output also reports the selected FED transformation and the excitation differences.
 
 \subsection{Examples}
-The following input scripts are taken from the public distribution. Install the corresponding data before running them.
+The following input scripts are taken from the public distribution. Check the existence of the corresponding data files before running the scripts.
 
 \exampleheading{Formaldehyde dimer, TDDFT}
 \examplepath{examples/diabat/fed/formaldehyde_dimer/tddft/diabat.inp}

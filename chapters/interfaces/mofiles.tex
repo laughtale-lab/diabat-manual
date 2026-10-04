@@ -1,13 +1,16 @@
 \section{Molecular orbital files}\label{sec-mofiles}
-The \keyref{key-statepack-mofile}{mofile} keyword specifies the file from which \progname{} reads the molecular geometry, atomic orbital (AO) basis, and molecular orbitals (MOs). Use a supported formatted-checkpoint or Molden-style file produced from the external calculation. An orbital file path may be absolute or relative to the working directory.
+The \keyref{key-statepack-mofile}{mofile} keyword specifies the file from which \progname{} reads the molecular geometry, AO basis, and MOs. Use a supported formatted-checkpoint or Molden-style file produced from the external calculation.
+An orbital file path may be absolute or relative to the working directory.
 \begin{lst-script}[escapechar=@]
 @\scriptnum{script-single-mofile}@
 mofile = "path/to/orbitals.fchk"
 \end{lst-script}
 \keyword
-{key-statepack-mofile}{mofile}{Path of a supported molecular orbital data file. The orbitals, atom sequence, and AO basis must be compatible with the electronic states selected for the task.}{\OpRequired{} when an orbital file is needed}{\OpString}{None}{Readable supported orbital data file}{Use the orbital file belonging to the corresponding external quantum chemistry calculation.}{mofile = "orbitals.fchk"}
+{key-statepack-mofile}{mofile}{Path of a supported molecular orbital data file. The orbitals, atom sequence, AO basis, and MOs must be compatible with the electronic states selected for the task.}{\OpRequired{} when an orbital file is needed}{\OpString}{None}{Readable supported orbital data file}{Use the orbital file belonging to the corresponding external quantum chemistry calculation.}{mofile = "orbitals.fchk"}
 
-For \texttt{postorb}, the \texttt{\$\$mopack} block can contain several orbital files when required by a particular job. The \texttt{mopack} block is \emph{not} used inside \texttt{statepack}. An electronic-state package instead has its own \keyref{key-statepack-mofile}{mofile} value, as described in Section~\ref{sec-statepack}.
+For \texttt{postorb} module, the \texttt{\$\$mopack} block can contain several orbital files when required by a particular job, see Chapter~\ref{chap-postorb} for details.
+An example is given below.
+%The \texttt{mopack} block is \keyemph{not} used inside \texttt{statepack}. An electronic-state package instead has its own \keyref{key-statepack-mofile}{mofile} value, as described in Section~\ref{sec-statepack}.
 \begin{lst-script}[escapechar=@]
 @\scriptnum{script-mopack}@
 $postorb
@@ -21,7 +24,7 @@ $
 \end{lst-script}
 
 \subsection*{Mopack keywords}
-The \texttt{mopack} form is used only by \texttt{postorb}. The following entries describe its numbered orbital-file list.
+The \texttt{mopack} form is used only by \texttt{postorb} module. The following entries describe its numbered orbital-file list.
 \begin{keywordoverview}
 \keyitem{key-mopack-num_file}{num\_file}{Number of orbital files in the package.}
 \keyitem{key-mopack-mofile_i}{mofile i}{Path of each numbered orbital file.}

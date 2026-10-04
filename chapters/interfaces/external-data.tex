@@ -1,0 +1,12 @@
+\section{External electronic-structure data}
+
+\progname{} is an independent diabatization toolkit that operates on electronic-structure data obtained from external quantum chemistry calculations. In general, two types of external data are required.
+
+The first is a molecular orbital (MO) file, which provides the molecular geometry, atomic-orbital (AO) basis, MOs, and related orbital information required to interpret the electronic states.
+The second is an electronic-state data file based on the corresponding orbital representation.
+It contains the electronic-state energies together with the wave-function information required by \progname{}, such as excitation amplitudes or configuration coefficients.
+This file is usually the output or log file of the external quantum chemistry calculation.
+
+For quantum-chemistry programs that print truncated wave functions by default, the external calculation should be configured to output sufficiently complete excitation amplitudes or configuration coefficients. Omitting significant contributions may introduce non-negligible errors to the density matrices and other quantities constructed from the electronic states.
+
+Sections~\ref{sec-mofiles} and~\ref{sec-statepack} describe how molecular orbital files and electronic-state data files are specified and read by \progname{}, respectively. Section~\ref{sec-method-support} summarizes the external quantum chemistry interfaces supported in the current version.

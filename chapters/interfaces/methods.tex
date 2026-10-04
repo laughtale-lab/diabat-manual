@@ -1,5 +1,5 @@
 \section{Supported electronic-structure interfaces}\label{sec-method-support}
-The public release accepts orbital and electronic-state data from Gaussian, Q-Chem, ORCA, and Amesp. Supported combinations are summarized below. The method names in the table are the exact choices recognized by the \keyref{key-statepack-method}{method} keyword. \texttt{RASCI} is a general method identifier and \texttt{RASCI1} and \texttt{RASCI2} select the corresponding RASCI-family representation when applicable.
+The public release accepts orbital and electronic-state data from Gaussian, Q-Chem, ORCA, and Amesp. Supported combinations are summarized below. The method names in the table are the exact choices recognized by the \keyref{key-statepack-method}{method} keyword. \texttt{RASCI} is a general method identifier and \texttt{RASCI1} and \texttt{RASCI2} select the corresponding RASCI in Q-Chem when applicable.
 \begin{center}
 \begin{tabularx}{\textwidth}{p{0.19\textwidth} X}
 \hline
@@ -12,4 +12,6 @@ Amesp & \texttt{CIS}, \texttt{TDA}, \texttt{TDHF}, \texttt{TDDFT}, \texttt{TDA-a
 \end{center}
 The \keyref{key-statepack-method}{method} keyword selects a wave-function data set, not merely a label for the calculation. A single Q-Chem output may contain both CIS/TDA and TDHF/TDDFT data. An ORCA output may contain CASSCF, NEVPT2, and QD-NEVPT2 information. When several methods are printed, \keyref{key-statepack-method}{method} can select the intended one. If omitted, \progname{} reads the earliest supported method present in the file. The method identifier is used with the detected external program to select the corresponding parser. An accepted identifier does not imply that the same method is available in every external program.
 
-For all interfaces, print sufficiently complete electronic-state coefficients or excitation amplitudes. The required quantum chemistry output settings depend on the selected method and program. The data examples in the release and the original calculation inputs in the paper data provide concrete working configurations. Omitting significant coefficients may alter the computed density matrices and electronic couplings.
+For external quantum chemistry calculations, print sufficiently complete electronic-state coefficients or excitation amplitudes.
+The required quantum chemistry output settings depend on the selected method and program. The data examples in the release and the original calculation inputs in the paper data provide concrete working configurations.
+Omitting significant coefficients may introduce non-negligible errors and make the results unreliable.

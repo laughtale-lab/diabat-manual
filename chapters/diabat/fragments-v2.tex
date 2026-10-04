@@ -1,5 +1,5 @@
 \section{Molecular fragments and spatial partitioning}\label{sec-diabat-frag}
-Fragment-based methods require the user to partition the atoms of the system into molecular fragments. An atom belongs to the fragment whose index list contains that atom. The order of indices follows the orbital file and is therefore determined by the original quantum chemistry calculation. FPHD can use more than two fragments, while the GMH, FCD, FED, and multistate FED--FCD job implementations require two fragments.
+Fragment-based methods require the user to partition the atoms of the system into molecular fragments. An atom belongs to the fragment whose index list contains that atom. The order of indices follows the orbital file and is therefore determined by the original quantum chemistry calculation. FPHD allows more than two fragments, while the GMH, FCD, FED, and multistate FED--FCD job implementations are restricted to two fragments.
 
 \begin{lst-script}[escapechar=@]
 @\scriptnum{diabat-fragment-script}@
@@ -9,4 +9,8 @@ $$<frag>
   frag 2 = 7..12
 $$
 \end{lst-script}
-The physical spatial region of a fragment is defined through a population-analysis partition. \progname{} supports L\"owdin and Mulliken partitions, selected with \keyref{key-common-partition}{partition}. L\"owdin and Mulliken are the two available AO-based partitions. The user may select either scheme according to the calculation. L\"owdin is the default and is generally preferable when a more balanced distribution of the AO overlap is desired. Mulliken offers an alternative population partition when it is appropriate for the system or the analysis. Additional partitioning methods may be supported in future releases.
+The physical spatial region of a fragment is defined through a population-analysis partition. \progname{} supports L\"owdin\cite{Loewdin-JCP-1950-p365} and Mulliken\cite{Mulliken-JCP-1955-p1833} partitions, selected with \keyref{key-common-partition}{partition}. L\"owdin and Mulliken are the two available AO-based partitions. 
+Either scheme may be selected as appropriate.
+The L\"owdin scheme is the default and is generally preferred because it provides a more accurate spatial partitioning.
+%Mulliken offers an alternative population partition when it is appropriate for the system or the analysis.
+Additional partitioning methods may be supported in future releases.

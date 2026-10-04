@@ -1,12 +1,18 @@
-\section{A quick route through this manual}\label{sec-manual-route}
-Begin with the installation procedure in Section~\ref{sec-install}. Confirm that the executable is correctly installed and that the \texttt{diabat} command is available from any working directory. You can then try the following route without reading the entire manual first.
+\section{Read this first: A quick route through this manual}\label{sec-manual-route}
+Begin with the installation procedure in Section~\ref{sec-install}. Confirm that the executable is correctly installed and that the \exec{} command is available from any working directory. You can then try the following route without reading the entire manual first.
 
 \begin{enumerate}
-\item \textbf{Run your first calculation.} Section~\ref{sec-quickstart} shows how to run the distributed formaldehyde-dimer example. In about a minute, you can learn how an FPHD calculation of singlet--singlet excitation energy transfer is started and where its results are written. The complete input is reproduced in \example{chap-diabat}{fphd-fmd}.
-\item \textbf{Understand the input.} Once you have run the example, read Section~\ref{sec-input-syntax} for the input-script syntax and Section~\ref{sec-statepack} to learn how orbital files and electronic-state data are selected. Section~\ref{sec-method-support} lists the supported external quantum chemistry interfaces and methods.
+\item \textbf{Run your first calculation.} Section~\ref{sec-quickstart} shows how to run the distributed formaldehyde-dimer example. In about one minute, you can learn how an FPHD calculation of singlet--singlet excitation energy transfer is started and where its results are written. The complete input is reproduced in \example{chap-diabat}{fphd-fmd}.
+
+\item \textbf{Understand the input.} Once you have run the example, read Section~\ref{sec-input-syntax} for the input-script syntax and Section~\ref{sec-statepack} to learn how external orbital files and electronic-state data are specified and read by \progname{}.
+Section~\ref{sec-method-support} lists the supported external quantum chemistry interfaces and electronic-structure methods.
+
 \item \textbf{Find the relevant job.} Chapter~\ref{chap-diabat} covers diabatization methods, Chapter~\ref{chap-postorb} covers orbital processing, and Chapter~\ref{chap-postwfn} covers electronic-state wave-function analyses. Read the section for the particular method or task you intend to use.
-\item \textbf{Try more examples.} Run other distributed examples before preparing a new input script. Their inputs illustrate how fragment definitions, state selections, and job options change between calculations.
-\item \textbf{Explore larger systems.} Chapter~\ref{chap-tutorials} presents four practical applications from the release article. These examples show how the same input conventions are used to investigate more complicated electronic-state mixing and nonadiabatic processes.
+
+\item \textbf{Try more examples.} Run other distributed examples before preparing a new input script from scratch.
+Their inputs illustrate how job settings vary across different calculations.
+
+\item \textbf{Explore challenging applications.} Chapter~\ref{chap-tutorials} presents four practical applications from the release article. These examples show how the same input conventions are used to investigate more complicated electronic-state mixing and nonadiabatic processes.
 \end{enumerate}
 
-Each method section begins with a short \emph{Background}, followed by \emph{Job Control}, method-specific \emph{Output Data Files}, and \emph{Examples}. Job Control includes a keyword summary for quick lookup and detailed keyword descriptions for preparing an input. The appendices explain numerical data files, phase-related file formats, and common problems encountered in calculations.
+Each method section begins with a short \textbf{Background}, followed by \textbf{Job Control}, method-specific \textbf{Output Data Files}, and \textbf{Examples}. Job Control includes a keyword summary for quick lookup and detailed keyword descriptions for preparing an input. The appendices provide supplementary materials for deeper understanding of the \progname{} program.

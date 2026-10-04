@@ -1,14 +1,16 @@
-\section{Quick Start}\label{sec-quickstart}
-The binary distribution includes ready-to-run input scripts and the orbital and electronic-state data needed by its examples. The following formaldehyde-dimer calculation provides a short introduction to FPHD diabatization of singlet--singlet excitation energy transfer with TDDFT adiabatic states.
+\section{Your first calculation}\label{sec-quickstart}
+%The binary distribution includes ready-to-run input scripts and the orbital and electronic-state data needed by its examples.
+The following formaldehyde-dimer calculation provides a short introduction to FPHD diabatization of singlet--singlet excitation energy transfer with TDDFT adiabatic states.
 
 After installation, enter the example directory in the installed distribution.
 \begin{lst-installation}
-cd /your/installation/diabat-v2.0-linux-x86_64/examples/diabat/fphd/formaldehyde_dimer/tddft
+cd /path/to/installation/examples/diabat/fphd/formaldehyde_dimer/tddft
 \end{lst-installation}
 The input script is named \texttt{diabat.inp}. Run it from that directory with
 \begin{lst-installation}
 diabat diabat.inp
 \end{lst-installation}
-This completes a first FPHD example without preparing any new input files. The script is reproduced in \example{chap-diabat}{fphd-fmd}, where the orbital file, selected electronic states, fragment definitions, and spatial partition are visible together. The general output files are explained in Section~\ref{sec-diabat-output}. You can run the other examples directly in their own directories or copy them to a separate working directory, provided that the file paths are updated where necessary.
+This completes a first FPHD example without preparing any new input files. The script is reproduced in \example{chap-diabat}{fphd-fmd}, which shows the orbital file, selected electronic states, fragment definitions, and spatial partition in a single input.
+The general output files are explained in Section~\ref{sec-diabat-output}. You can run the other examples directly in their own directories or copy them to a separate working directory.
 
-The data supplied with the binary distribution originated from Gaussian and Q-Chem calculations. For redistribution, the original orbital and electronic-state files were exported again using the \texttt{postorb} and \texttt{postwfn} modules, respectively. The original external quantum chemistry input scripts are also supplied in the \texttt{data/} directory. Users with access to the corresponding quantum chemistry software may repeat those calculations to regenerate the original files and use them directly for diabatization without first re-exporting them through \progname{}. See \texttt{data/README.md} for the provenance and reproduction notes.
+The data supplied with the binary distribution originated from Gaussian and Q-Chem calculations. For redistribution, the original orbital and electronic-state files were exported again using the \texttt{postorb} and \texttt{postwfn} modules in \progname{}, respectively. The original external quantum chemistry input scripts are also supplied in the \texttt{data/} directory. Users with access to the corresponding quantum chemistry software may repeat those calculations to regenerate the original files and use them directly for diabatization without first re-exporting them through \progname{}. See \texttt{data/README.md} for the provenance and reproduction notes.

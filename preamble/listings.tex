@@ -63,13 +63,6 @@
   \textcolor{blue}{\hyperlink{#2}{Example \ref{#1}-\ref{#2}}}%
 }
 
-\lstdefinelanguage{script}{
-  morekeywords={\$,\$\$,\$\$\$,\$\$\$\$,\$\$\$\$\$},
-  morecomment=[l]{\#},
-  morestring=[b]", 
-  alsoletter={-},
-  morekeywords=[2]{postorb,postwfn,diabat-fphd,diabat-gmh,diabat-fcd,diabat-fed,diabat-fedfcd,diabat-utils-phasefix,statepack,stateset,mopack,statepack-ref,statepack-target,statepack-1,statepack-2,statepack-3},
-}
 
 \lstnewenvironment{lst-script}[1][]{
   \lstset{
@@ -89,7 +82,7 @@
   showtabs=false,
   tabsize=2,
   basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
-  language=script,
+  language=input-script-language,
   moredelim=[is][\color{magenta}]{<}{>},
   literate={\$}{{{\color{blue}\$}}}1 {~}{{{$\sim$}}}2,
   escapechar=@
@@ -116,7 +109,7 @@
   numberstyle=\tiny\color{mygray}, stringstyle=\color{myredstring}, breakatwhitespace=false,
   breaklines=true, keepspaces=true, numbers=none, numbersep=5pt, showspaces=false,
   showstringspaces=false, showtabs=false, tabsize=2,
-  basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont, language=script,
+  basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont, language=input-script-language,
   moredelim=[is][\color{magenta}]{<}{>}, literate={\$}{{{\color{blue}\$}}}1 {~}{{{$\sim$}}}2, escapechar=@
 }}{}
 
@@ -127,7 +120,7 @@
   stringstyle=\color{myredstring},basicstyle=\ttfamily\fontsize{10pt}{10pt}\selectfont,
   breakatwhitespace=false,breaklines=true,keepspaces=true,numbers=none,
   showspaces=false,showstringspaces=false,showtabs=false,tabsize=2,
-  language=script,moredelim=[is][\color{magenta}]{<}{>},escapechar=@,
+  language=input-script-language,moredelim=[is][\color{magenta}]{<}{>},escapechar=@,
   literate={\$}{{{\color{blue}\$}}}1
 }
 \lstdefinestyle{technicalfile}{

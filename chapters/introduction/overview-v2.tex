@@ -1,4 +1,15 @@
 \section{Overview}
-\progname{} is a diabatization toolkit developed by Yu-Chen Wang for research in theoretical and computational chemistry. Its principal purpose is to construct quasi-diabatic electronic states and calculate the electronic couplings between them. Several diabatization methods are available for problems involving charge transfer, excitation energy transfer, and processes in which different electronic-state characters coexist. Orbital and electronic-state analyses are also available to assist with preparation and interpretation of calculations.
+\progname{} is a diabatization toolkit developed by Yu-Chen Wang for research in theoretical and computational chemistry.
+%\keyemph{\progname{} is a diabatization toolkit developed by Yu-Chen Wang for research in theoretical and computational chemistry.}
+It is designed to provide a comprehensive and unified platform for constructing quasi-diabatic electronic states and evaluating their electronic couplings from adiabatic states obtained with external quantum chemistry programs.
+Different diabatization methods are implemented within a common framework, with a uniform phase convention for the resulting quasi-diabatic states and electronic couplings.
 
-The official repository is \url{https://github.com/laughtale-lab/diabat}. This manual describes version 2.0 of \progname{}.
+A central focus of \progname{} is \keyemph{multistate diabatization} in \keyemph{multichromophoric systems}.
+%\keyemph{A central focus of \progname{} is multistate diabatization in multichromophoric systems.}
+Equipped with several advanced diabatization methods, particularly the fragment particle--hole densities (FPHD) approach, \progname{} can be applied not only to conventional nonadiabatic processes such as charge transfer, excitation energy transfer, and singlet fission in molecular dimers, but also to multichromophoric systems and processes involving less conventional charge, excitation, and spin distributions.
+This enables the construction of quasi-diabatic states for a broad range of electronic-state characters without restricting the diabatization to a particular type of nonadiabatic process.
+In addition to diabatization, \progname{} provides orbital and electronic-state wave-function postprocessing modules for auxiliary calculations and further analysis.
+
+The official software repository is available at \url{https://github.com/laughtale-lab/diabat}, and the online user manual is available at
+\url{https://laughtale-lab.github.io/diabat-manual}.
+\manualnote{This manual describes \progname{} version~\manualversion{}.}

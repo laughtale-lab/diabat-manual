@@ -1,18 +1,24 @@
 \section{Electronic-state file packages}\label{sec-statepack}
-A \texttt{\$\$statepack} block specifies which electronic states to load and where to find their external quantum chemistry data. For one calculation, place the orbital file, electronic-state data file, and state selection inside the same block, as in \script{chap-interfaces}{script-statepack-single}.
+\subsection{Loading states from one calculation}
+A \texttt{\$\$statepack} block specifies where to find the external electronic-state data and which states to load.
+For a single external calculation, place the orbital file, electronic-state data file, and state selection inside the same block, as in \script{chap-interfaces}{script-statepack-single}.
 \begin{lst-script}[escapechar=@]
 @\scriptnum{script-statepack-single}@
 $$statepack
   mofile = "orbitals.fchk"
   statefile = "states.log"
   state_index = 1..5
-  method = "TDDFT"
+  method = "TDDFT"     # (optional)
+  confit_cutoff = 0.0  # (optional)
 $$
 \end{lst-script}
 
-\keyref{key-statepack-mofile}{mofile} identifies the orbital file described in Section~\ref{sec-mofiles}. It supplies the geometry, AO basis, and molecular orbitals used to interpret the selected electronic states.
+Here, we briefly introduce these keywords. Detailed descriptions are provided in Section~\ref{sec-state-package-keywords}.
 
-\keyref{key-statepack-statefile}{statefile} identifies the external electronic-state data file, normally the log produced by the quantum chemistry calculation. Both \texttt{mofile} and \texttt{statefile} accept absolute paths or paths relative to the current working directory.
+\keyref{key-statepack-mofile}{mofile} identifies the orbital file described in Section~\ref{sec-mofiles}. It supplies the geometry, AO basis, and molecular orbitals used to interpret the selected electronic states.
+The \texttt{mopack} block introduced in \script{chap-interfaces}{script-mopack} is \keyemph{not} used inside \texttt{statepack}. 
+
+\keyref{key-statepack-statefile}{statefile} identifies the external electronic-state data file, normally the log produced by the quantum chemistry calculation. Both \keyref{key-statepack-mofile}{mofile} and \keyref{key-statepack-statefile}{statefile} accept absolute paths or paths relative to the current working directory.
 
 \keyref{key-statepack-state_index}{state\_index} selects states in the order in which the chosen method reports them in the external data file. Indices normally begin at 1. For example, the first three excited states printed by a Gaussian TDDFT calculation are selected using \texttt{state\_index = 1..3}. The special use of index 0 with certain single-excitation methods is described below and illustrated in Section~\ref{sec-internal-ids}.
 
@@ -20,10 +26,15 @@ $$
 
 \keyref{key-statepack-config_cutoff}{config\_cutoff} sets the reading cutoff for configuration coefficients or amplitudes. Keep all contributions needed for the selected analysis. Discarding important coefficients can change the resulting density matrices.
 
-For CIS, TDA, TDHF, TDDFT, and TDA-aTB data, \keyref{key-statepack-state_index}{state\_index} may also include 0. Index 0 loads the reference ground state as an independent electronic state, while positive indices select the explicitly printed excited states in their method-specific order. Including index 0 can be useful for a charged system when the reference ground state and its excited states are to be diabatized together. For all other methods, follow the regular method-specific printed-state numbering.
+For CIS, TDA, TDHF, TDDFT, and TDA-aTB data, \keyref{key-statepack-state_index}{state\_index} may also include 0.
+Index 0 loads the reference ground state as an independent electronic state, while positive indices select the explicitly printed excited states.
+Including index 0 can be useful for a charged system when the reference ground state and its excited states are to be diabatized together.
+For all other methods, follow the regular method-specific printed-state numbering.
 
 \subsection{Loading states from more than one calculation}
-A single outer \texttt{statepack} can contain numbered third-level packages. \script{chap-interfaces}{script-statepack-multiple} illustrates the structure used to read electronic states from two separate calculations. Here the first file supplies a reference electronic state and the second supplies the adiabatic states selected for diabatization. The paths and state lists are illustrative; the corresponding calculations must provide compatible data for the intended job.
+A single outer \texttt{statepack} can contain numbered third-level packages. \script{chap-interfaces}{script-statepack-multiple} illustrates the structure used to read electronic states from two separate calculations.
+Here, the first and second state packages specify one and six electronic states to be loaded, respectively.
+The paths and state lists are illustrative; the corresponding calculations must provide compatible data for the intended job.
 \begin{lst-script}[escapechar=@]
 @\scriptnum{script-statepack-multiple}@
 $$statepack
@@ -42,9 +53,10 @@ $$statepack
   $$$
 $$
 \end{lst-script}
-This structure makes it possible to select states from distinct files. The requirements for combining their wave functions depend on the intended calculation and are discussed in Section~\ref{sec-reading} and in the respective job chapters. For a description of the internal state numbering assigned after loading, see Section~\ref{sec-internal-ids}.
+This structure makes it possible to select states from distinct files. The consistency requirements for combining wave functions from multiple files depend on the intended calculation and are discussed in Section~\ref{sec-reading} and in the respective job chapters. For a description of the internal state numbering assigned after loading, see Section~\ref{sec-internal-ids}.
 
 \subsection{State-package keywords}
+\label{sec-state-package-keywords}
 \subsubsection*{Keyword summary}
 The table below provides a compact index of the state-package keywords. Each keyword links to its detailed description.
 \begin{keywordoverview}
@@ -57,14 +69,14 @@ The table below provides a compact index of the state-package keywords. Each key
 \end{keywordoverview}
 \subsubsection*{Detailed keyword descriptions}
 The tables below give the detailed rules for the state-file selection.
-\keyword
-{key-statepack-num_state_pack}{num\_state\_pack}{Number of numbered \texttt{statepack-i} subblocks in a multiple-package \texttt{statepack}. This keyword is used only with the multiple-package form shown in \script{chap-interfaces}{script-statepack-multiple}.}{\OpRequired{} for a multiple-package statepack}{\OpInt}{None}{Positive integer}{Use the single-package form when all selected states come from one calculation.}{num\_state\_pack = 2}
 The \keyref{key-statepack-mofile}{mofile} keyword is documented in Section~\ref{sec-mofiles}.
 \keyword
-{key-statepack-statefile}{statefile}{Electronic-state data file containing the selected wave-function information. Accepts an absolute path or a path relative to the working directory.}{\OpRequired}{\OpString}{None}{Existing readable state-data file}{Retain sufficient printed coefficients or excitation amplitudes.}{statefile = "states.log"}
+{key-statepack-num_state_pack}{num\_state\_pack}{Number of numbered \texttt{statepack-i} subblocks in a multiple-package \texttt{statepack}. This keyword is used only with the multiple-package form shown in \script{chap-interfaces}{script-statepack-multiple}.}{\OpRequired{} for a multiple-package statepack}{\OpInt}{None}{Positive integer}{Use the single-package form when all selected states come from one calculation.}{num\_state\_pack = 2}
 \keyword
-{key-statepack-state_index}{state\_index}{Indices of the electronic states for the selected method in the order printed by that method. For CIS, TDA, TDHF, TDDFT, and TDA-aTB, 0 may be used for the underlying reference ground state. These are external indices, not internal state IDs (Section~\ref{sec-internal-ids}).}{\OpRequired}{\OpIntseq}{None}{Integer sequence using individual values, ranges such as \texttt{i..j} or \texttt{i:j}, stepped ranges \texttt{i:j:step}, or mixtures of these forms}{Select only the desired external states and verify the chosen method. See Section~\ref{sec-input-syntax} for the general integer-sequence syntax.}{state\_index = 0, 1..3}
+{key-statepack-statefile}{statefile}{Electronic-state data file containing the desired wave-function information. Accepts an absolute path or a path relative to the working directory.}{\OpRequired}{\OpString}{None}{Existing readable state-data file}{Retain sufficient printed coefficients or excitation amplitudes.}{statefile = "states.log"}
+\keyword
+{key-statepack-state_index}{state\_index}{Indices of the electronic states for the selected method in the order printed by that method. For CIS, TDA, TDHF, TDDFT, and TDA-aTB, 0 may be used for the underlying reference ground state. These are external indices, not internal state IDs (Section~\ref{sec-internal-ids}).}{\OpRequired}{\OpIntseq}{None}{Integer sequence using individual values, ranges such as \texttt{i..j} or \texttt{i:j}, stepped ranges \texttt{i:j:step}, or mixtures of these forms. See Section~\ref{sec-input-syntax} for the general integer-sequence syntax.}{Select only the desired external states and verify the chosen method.}{state\_index = 0, 1..3}
 \keyword
 {key-statepack-method}{method}{Selects results from a particular electronic-structure method from an external file that may contain several kinds of state data. The external program and earliest supported method in the file are detected automatically if omitted.}{\OpOptional}{\OpString}{Automatically detected}{Supported names in Section~\ref{sec-method-support}}{Specify this keyword when the file contains multiple methods and the intended one is not the first recognized method.}{method = "QD-NEVPT2"}
 \keyword
-{key-statepack-config_cutoff}{config\_cutoff}{Configuration coefficients or amplitudes at or below this absolute threshold are omitted during reading.}{\OpOptional}{\OpReal}{0}{Nonnegative real}{Keep important contributions to the target states.}{config\_cutoff = 0.0}
+{key-statepack-config_cutoff}{config\_cutoff}{Configuration coefficients or amplitudes at or below this absolute threshold are omitted during reading.}{\OpOptional}{\OpReal}{0}{Nonnegative real}{DO NOT use this keyword unless a nonzero cutoff is required for a specific purpose, such as testing or diagnostic calculations.}{config\_cutoff = 0.0}

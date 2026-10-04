@@ -7,14 +7,14 @@ An input script is a plain-text file that describes the jobs to be performed and
 # Example of the general job and nested-block structure.
 $diabat-fphd
   $$statepack
-    mofile = "orbitals.fchk"
-    statefile = "states.log"
-    state_index = 1..4
+    mofile = "orbitals.fchk" # path to the MO file
+    statefile = "states.log" # path to the electronic-state file
+    state_index = 1..4  # read the first four states
   $$
-  $$frag
+  $$<frag>
     num_frag = 2
-    frag 1 = 1..4
-    frag 2 = 5..8
+    frag 1 = 1..4   # the first 4 atoms belong to the first fragment
+    frag 2 = 5..10  # the subsequent 6 atoms belong to the second fragment
   $$
 $
 \end{lst-script}
@@ -25,14 +25,8 @@ The general writing rules are as follows.
 \item \textbf{Whitespace.} Spaces, indentation, and blank lines may be used to make the script easier to read. They do not define the block hierarchy. Indentation is therefore recommended for readability but is not required by the parser.
 \item \textbf{Blocks.} Computational tasks and structured groups of options are written as blocks. The number of leading dollar signs gives the block level. A first-level job begins with one dollar sign. A nested second-level block begins with two dollar signs and a third-level block begins with three. A block ends with a line containing the same number of dollar signs used to open it. A nested block must be completely contained inside its parent block.
 \item \textbf{Job and block names.} The block name follows the opening dollar signs. Hyphens may be part of a job name. For example, \texttt{\$diabat-fphd} selects the FPHD diabatization job. Use \texttt{diabat --module} to list available jobs and \texttt{diabat --show job\_name} to inspect a selected job.
-\item \textbf{Keywords.} A keyword is written as \texttt{name = value}. The keyword must appear in a block that accepts it. The parser reports an error when a known keyword is placed in the wrong block or when a block contains an unsupported keyword.
-\item \textbf{Character strings.} Character values may be written without quotes, with single quotes, or with double quotes when the corresponding keyword accepts a string. The examples in this manual use double quotes. Quoting is particularly useful for file paths and other values that contain spaces or characters that could otherwise be ambiguous.
-\item \textbf{Logical values.} Logical keywords use \texttt{.true.} or \texttt{.false.}.
-\item \textbf{Integer sequences.} Keywords such as \keyref{key-statepack-state_index}{state\_index}, \texttt{ao\_id}, \texttt{mo\_id}, fragment atom lists, and state sets use the common integer-sequence parser. Individual integers may be separated by commas. A consecutive inclusive range can be written as \texttt{i..j} or \texttt{i:j}. An explicit step is written as \texttt{i:j:step}. These forms may be mixed in one value. For example,
-\begin{lst-script}
-state_index = 1, 3..5, 8:12:2, 20
-\end{lst-script}
-selects \texttt{1, 3, 4, 5, 8, 10, 12, 20}. The values in a sequence may be listed in any order. An inclusive range may run upward or downward when its step has the appropriate sign. A zero step is invalid. Individual keywords may impose additional lower or upper bounds on the integers they accept.
+\item \textbf{Keywords.}
+A keyword is written as \texttt{name = value}. The keyword must appear in a block that accepts it. The parser reports an error when a known keyword is \keyemph{not} placed in any block or when a block contains an unsupported keyword. The supported keyword value types are described in Section~\ref{sec-keyword-value-types}.
 \item \textbf{Several jobs in one script.} A script may contain more than one first-level job block. They are parsed as independent jobs in the order defined by the program. Input files supplied to one job are not implicitly inherited by another job.
 \end{enumerate}
 
