@@ -4,41 +4,35 @@
   const GOATCOUNTER_ENDPOINT =
     'https://diabat-manual.goatcounter.com/count';
 
-  /*
-   * Statistics used for the public Manual access counter.
-   *
-   * /manual-home
-   *     Visits to the HTML Manual landing page.
-   *
-   * readme-pdf
-   *     PDF accesses initiated from the GitHub repository README.
-   */
-  const HOME_PATH = '/manual-home';
-  const README_PDF_EVENT = 'readme-pdf';
+  const GOATCOUNTER_TOTAL =
+    'https://diabat-manual.goatcounter.com/counter/TOTAL.json';
 
-  const COUNTER_BASE =
-    'https://diabat-manual.goatcounter.com/counter/';
-
-  const COUNTER_ELEMENT_ID = 'manual-access-count';
+  const COUNTER_ELEMENT_ID =
+    'manual-access-count';
 
 
   /*
-   * Track the HTML landing page only on the production GitHub Pages site.
-   * Local previews therefore do not pollute the statistics.
+   * Only track visits on the production GitHub Pages site.
+   * Local previews will not be sent to GoatCounter.
    */
   const isProductionSite =
     window.location.hostname === 'laughtale-lab.github.io' &&
     window.location.pathname.startsWith('/diabat-manual');
 
+
+  /*
+   * Record a visit to the HTML Manual page as /manual-home.
+   */
   if (isProductionSite) {
     window.goatcounter = {
-      path: HOME_PATH
+      path: '/manual-home'
     };
 
     const script = document.createElement('script');
 
     script.async = true;
     script.src = 'https://gc.zgo.at/count.js';
+
     script.setAttribute(
       'data-goatcounter',
       GOATCOUNTER_ENDPOINT
@@ -49,54 +43,23 @@
 
 
   /*
-   * Read a public GoatCounter count.
+   * Display the total number of Manual visits.
    *
-   * GoatCounter returns the count as a formatted string, for example
-   * "1,234". Convert it to an integer before adding the two counters.
+   * At present GoatCounter records only:
    *
-   * A path that has not yet been recorded may return 404. In that case
-   * its count is treated as zero.
+   *   /manual-home
+   *       visits to the HTML Manual page
+   *
+   *   readme-pdf
+   *       PDF accesses from the GitHub repository README
+   *
+   * Therefore:
+   *
+   *   GoatCounter TOTAL
+   *     = HTML Manual visits
+   *     + README-to-PDF visits
    */
-  async function getPublicCount(path) {
-    const url =
-      COUNTER_BASE +
-      encodeURIComponent(path) +
-      '.json';
-
-    const response = await fetch(url, {
-      cache: 'no-store'
-    });
-
-    if (response.status === 404) {
-      return 0;
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        'Unable to retrieve GoatCounter statistics.'
-      );
-    }
-
-    const data = await response.json();
-
-    const numericCount =
-      String(data.count).replace(/[^\d]/g, '');
-
-    return numericCount
-      ? Number.parseInt(numericCount, 10)
-      : 0;
-  }
-
-
-  /*
-   * Display:
-   *
-   *   HTML landing-page visits
-   * + README-to-PDF accesses
-   * --------------------------------
-   *   total Manual accesses
-   */
-  async function displayManualAccessCount() {
+  async function displayManualVisitCount() {
     const element =
       document.getElementById(COUNTER_ELEMENT_ID);
 
@@ -105,20 +68,26 @@
     }
 
     try {
-      const [homeVisits, readmePdfVisits] =
-        await Promise.all([
-          getPublicCount(HOME_PATH),
-          getPublicCount(README_PDF_EVENT)
-        ]);
+      const response = await fetch(
+        GOATCOUNTER_TOTAL,
+        {
+          cache: 'no-store'
+        }
+      );
 
-      const total =
-        homeVisits + readmePdfVisits;
+      if (!response.ok) {
+        throw new Error(
+          'Unable to retrieve GoatCounter statistics.'
+        );
+      }
 
-      element.textContent =
-        total.toLocaleString('en-US');
+      const data = await response.json();
+
+      element.textContent = data.count;
+
     } catch (error) {
       console.warn(
-        'Unable to display the Manual access count:',
+        'Unable to display the Manual visit count:',
         error
       );
 
@@ -130,9 +99,9 @@
   if (document.readyState === 'loading') {
     document.addEventListener(
       'DOMContentLoaded',
-      displayManualAccessCount
+      displayManualVisitCount
     );
   } else {
-    displayManualAccessCount();
+    displayManualVisitCount();
   }
 })();
