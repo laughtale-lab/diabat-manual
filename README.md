@@ -7,7 +7,7 @@ PDF/HTML files or introduce a separately maintained Markdown copy.
 **Planned permanent links (only live after the first successful GitHub Pages deployment):**
 
 - **Online docs / initial PDF landing page:** https://laughtale-lab.github.io/diabat-manual/
-- **Latest PDF (direct file):** https://laughtale-lab.github.io/diabat-manual/diabat.pdf
+- **Latest PDF (direct file):** https://laughtale-lab.github.io/diabat-manual/pdf/
 
 **Local build:** `bash tools/build-pdf.sh`, followed by
 `python3 tools/validate-pdf.py main.pdf` (requires Poppler utilities).

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <meta name="robots" content="noindex">
+
+  <title>Opening Diabat User Manual</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 40rem;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <p>
+    Opening the Diabat 2.0 User Manual PDF...
+  </p>
+
+  <p>
+    <a id="pdf-fallback" href="../diabat.pdf">
+      Open the PDF manually
+    </a>
+  </p>
+
+
+  <script>
+    /*
+     * Do not count this redirect page itself as a normal page visit.
+     * Only the readme-pdf event is recorded.
+     */
+    window.goatcounter = {
+      no_onload: true
+    };
+
+    let redirected = false;
+
+    function openPDF() {
+      if (redirected) {
+        return;
+      }
+
+      redirected = true;
+      window.location.replace('../diabat.pdf');
+    }
+
+    /*
+     * Fallback in case GoatCounter is slow or blocked.
+     * The visitor must never be prevented from opening the Manual.
+     */
+    window.setTimeout(openPDF, 1500);
+  </script>
+
+
+  <script
+    src="https://gc.zgo.at/count.js"
+    data-goatcounter="https://diabat-manual.goatcounter.com/count"
+    onload="
+      window.goatcounter.count({
+        path: 'readme-pdf',
+        title: 'PDF access from GitHub README',
+        event: true
+      });
+
+      window.setTimeout(openPDF, 350);
+    ">
+  </script>
+
+</body>
+</html>
