@@ -13,3 +13,15 @@ footer { margin-top: 78px; border-top: 1px solid #d7dfe6; padding-top: 16px; fon
 footer a { color: #315d7c; }
 footer span { margin: 0 12px; color: #7a8a97; }
 @media (max-width: 500px) { .container { margin-top: 5vh; padding: 18px 22px 48px; } footer { margin-top: 60px; } }
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.manual-access-counter {
+  font-size: 0.78rem;
+  color: #8b96a5;
+  white-space: nowrap;
+}
