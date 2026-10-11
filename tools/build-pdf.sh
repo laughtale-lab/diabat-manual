@@ -2,6 +2,7 @@
 # The same entry point is used locally and in GitHub's fixed TeX Live image.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
 # Generate the high-resolution cover background before LaTeX compilation.
 if ! command -v python3 >/dev/null 2>&1; then
   echo "ERROR: python3 is required to generate the cover background" >&2
