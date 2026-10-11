@@ -1,92 +1,83 @@
-import argparse, zlib, struct
+#!/usr/bin/env python3
+"""Generate a smooth, star-free A4 cover background as an opaque sRGB PNG.
 
-def clamp(x):
-    return 0 if x < 0 else 255 if x > 255 else int(x)
+The gradient is strictly one-dimensional and monotonically darkens downward.
+No light bands, radial glows, transparency, or external dependencies.
+"""
+import argparse
+import math
+from pathlib import Path
+import struct
+import zlib
 
+# Colors chosen to maintain white ASCII-logo contrast near the upper third.
+TOP = (48, 77, 105)       # #304D69: airy slate blue at top edge
+BOTTOM = (5, 9, 17)      # #050911: near-black at bottom edge
+DECAY = 3.15             # faster darkening at top; gradual descent below
 
-def write_png(path, width, height, rows):
-    def chunk(tag, data):
-        return (struct.pack('!I', len(data)) + tag + data +
-                struct.pack('!I', zlib.crc32(tag + data) & 0xffffffff))
-
-    raw = bytearray()
-    for row in rows:
-        raw.append(0)  # filter type 0
-        raw.extend(row)
-
-    ihdr = struct.pack('!IIBBBBB', width, height, 8, 2, 0, 0, 0)
-    idat = zlib.compress(bytes(raw), 9)
-    png = b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', ihdr) + chunk(b'IDAT', idat) + chunk(b'IEND', b'')
-    with open(path, 'wb') as f:
-        f.write(png)
-
-
-def smoothstep(t):
-    return t * t * (3 - 2 * t)
-
-
-def interp(a, b, t):
-    return tuple(a[i] * (1 - t) + b[i] * t for i in range(3))
-
-
-def ordered_dither(x, y, amount=0.35):
-    # 4x4 Bayer matrix, centered around 0.
-    bayer = [
-        [0, 8, 2, 10],
-        [12, 4, 14, 6],
-        [3, 11, 1, 9],
-        [15, 7, 13, 5],
-    ]
-    v = bayer[y % 4][x % 4] / 15.0 - 0.5
-    return v * amount
+# Ordered dithering reduces visible 8-bit banding without introducing stars.
+BAYER8 = (
+    (0, 48, 12, 60, 3, 51, 15, 63),
+    (32, 16, 44, 28, 35, 19, 47, 31),
+    (8, 56, 4, 52, 11, 59, 7, 55),
+    (40, 24, 36, 20, 43, 27, 39, 23),
+    (2, 50, 14, 62, 1, 49, 13, 61),
+    (34, 18, 46, 30, 33, 17, 45, 29),
+    (10, 58, 6, 54, 9, 57, 5, 53),
+    (42, 26, 38, 22, 41, 25, 37, 21),
+)
 
 
-def make_rows(width, height):
-    # Refined palette:
-    # Keep top brightness close to previous acceptable version,
-    # but reduce the gray/steel quality by shifting slightly toward indigo.
-    top = (44, 58, 97)       # #2C3A61  -- cool indigo-leaning midnight blue
-    mid = (18, 28, 48)       # #121C30  -- logo region: slightly deeper
-    bottom = (4, 7, 14)      # #04070E  -- blue-black, not dead neutral black
-
-    # Logo sits around upper-middle. We want relatively quick early descent.
-    knee = 0.29  # by 29% page height, we are already near the logo-zone depth
-    rows = []
-    for y in range(height):
-        p = y / (height - 1)
-        if p <= knee:
-            t = p / knee
-            # faster early darkening while keeping top brightness intact
-            t = t ** 0.78
-            rgb = interp(top, mid, t)
-        else:
-            t = (p - knee) / (1 - knee)
-            # slower deepening afterwards for a long descent into deep space
-            t = smoothstep(t)
-            rgb = interp(mid, bottom, t)
-
-        row = bytearray()
-        for x in range(width):
-            d = ordered_dither(x, y)
-            row.extend([clamp(c + d) for c in rgb])
-        rows.append(bytes(row))
-    return rows
+def chunk(tag: bytes, data: bytes) -> bytes:
+    payload = tag + data
+    return struct.pack('>I', len(data)) + payload + struct.pack('>I', zlib.crc32(payload) & 0xFFFFFFFF)
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Generate atmospheric cover background PNG.')
-    parser.add_argument('--output', default='assets/cover-background.png')
-    parser.add_argument('--dpi', type=int, default=300)
-    parser.add_argument('--width-mm', type=float, default=210.0)
-    parser.add_argument('--height-mm', type=float, default=297.0)
-    args = parser.parse_args()
+def generate(path: Path, dpi: int) -> tuple[int, int]:
+    # A4 dimensions, as defined by the source LaTeX document / pdf geometry.
+    width = round(210 / 25.4 * dpi)
+    height = round(297 / 25.4 * dpi)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    denom = -math.expm1(-DECAY)
+    # Build eight horizontal dither patterns for each row; no lateral glow.
+    dither_patterns = [tuple((b + 0.5) / 64 - 0.5 for b in row) for row in BAYER8]
 
-    width = round(args.width_mm / 25.4 * args.dpi)
-    height = round(args.height_mm / 25.4 * args.dpi)
-    rows = make_rows(width, height)
-    write_png(args.output, width, height, rows)
-    print(f'Wrote {args.output} ({width}x{height})')
+    with path.open('wb') as output:
+        output.write(b'\x89PNG\r\n\x1a\n')
+        output.write(chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0)))
+        output.write(chunk(b'sRGB', b'\x00'))  # Explicit standard RGB intent
+        density = round(dpi / 0.0254)
+        output.write(chunk(b'pHYs', struct.pack('>IIB', density, density, 1)))
+        compress = zlib.compressobj(level=9)
+        with_idat = bytearray()
+        for y in range(height):
+            t = y / (height - 1)
+            fraction = -math.expm1(-DECAY * t) / denom
+            colors = [a + (b - a) * fraction for a, b in zip(TOP, BOTTOM)]
+            dither = dither_patterns[y % 8]
+            row8 = bytearray()
+            for offset in dither:
+                for channel in colors:
+                    # tiny, symmetrical quantization dither; no added light source
+                    row8.append(max(0, min(255, round(channel + offset))))
+            full_row = bytes(row8) * (width // 8) + bytes(row8[: (width % 8) * 3])
+            with_idat.extend(compress.compress(b'\x00' + full_row))
+            if len(with_idat) > 65536:
+                output.write(chunk(b'IDAT', bytes(with_idat)))
+                with_idat.clear()
+        with_idat.extend(compress.flush())
+        if with_idat:
+            output.write(chunk(b'IDAT', bytes(with_idat)))
+        output.write(chunk(b'IEND', b''))
+    return width, height
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=Path('assets/cover-background.png'))
+    parser.add_argument('--dpi', type=int, default=300)
+    args = parser.parse_args()
+    if not 72 <= args.dpi <= 600:
+        parser.error('--dpi must be between 72 and 600')
+    w, h = generate(args.output, args.dpi)
+    print(f'Created {args.output}: {w} x {h}, opaque sRGB PNG, {args.dpi} DPI')
