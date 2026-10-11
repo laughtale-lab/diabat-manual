@@ -6,10 +6,15 @@
 %\end{tikzpicture}
 
 \begin{tikzpicture}[remember picture,overlay]
-  \shade[top color=nighttop,bottom color=nightbottom]
-    (current page.south west) rectangle (current page.north east);
-  \fill[nightmid,opacity=0.18]
-    (current page.south west) rectangle (current page.north east);
+  \node[
+    anchor=center,
+    inner sep=0pt
+  ] at (current page.center) {%
+    \includegraphics[
+      width=\paperwidth,
+      height=\paperheight
+    ]{assets/cover-background.png}%
+  };
 \end{tikzpicture}
 
 \centering
