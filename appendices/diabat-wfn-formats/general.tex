@@ -1,0 +1,62 @@
+\section{General File Structure}\label{sec-diabat-wfn-general}
+Diabat wave-function files follow a common structure, as shown below:
+\begin{lstlisting}[style=technicalfile]
+## Wave-function data exported by Diabat
+Method: [method name]
+[Wave-function header, line 1]
+[Wave-function header, line 2]
+...
+
+State Information:
+
+State index: 1
+
+[Properties of state 1]
+Amplitudes:
+[Method-specific coefficient table for state 1]
+
+State index: 2
+
+[Properties of state 2]
+Amplitudes:
+[Method-specific coefficient table for state 2]
+...
+\end{lstlisting}
+The bracketed text and ellipses indicate information to be replaced or repeated; they are not literal file contents. The parts of the file are explained below in the same order.
+
+\textbf{File identification.} The first line must begin with \texttt{\#\# } and contain \texttt{by Diabat}, as shown above. This identifies the file as one written in a Diabat wave-function format.
+
+\textbf{Method.} The \texttt{Method:} line identifies the type of wave-function data stored in the file. Its value uses the same method names as the \keyref{key-statepack-method}{method} keyword in the \texttt{statepack} block (Section~\ref{sec-statepack}); the supported names are listed in Section~\ref{sec-method-support}. Some methods share the same file layout. For example, \texttt{CIS}, \texttt{TDA}, and \texttt{TDA-aTB} use one layout; \texttt{TDHF} and \texttt{TDDFT} use another; and \texttt{CASSCF}, \texttt{NEVPT2}, and \texttt{QD-NEVPT2} use a third. Names within each group are interchangeable for identifying the coefficient-record format.
+
+\textbf{Wave-function header.} The lines between \texttt{Method:} and \texttt{State Information:} describe information common to all states in the file, such as electron numbers and the occupied, active, or virtual orbital spaces. The required items and their exact writing rules depend on the wave-function type and are given in the following sections.
+
+\textbf{State Information.} The line \texttt{State Information:} separates the wave-function header from the individual electronic states. Each state is then written as a separate record.
+
+\textbf{State records.} Each state record begins with \texttt{State index:} followed by a positive integer. Number the states consecutively from 1 in ascending order. These are the external state indices selected by \keyref{key-statepack-state_index}{state\_index}, not the internal state IDs assigned by Diabat after loading (see Section~\ref{sec-internal-ids}). Leave a blank line after the index, then write the state properties and the coefficient block. For example:
+\begin{lstlisting}[style=technicalfile]
+State index: 1
+
+  Total energy (a.u.): -1.517900228395E+02
+  Excitation energy (eV):    5.606071708888
+  Multiplicity: Singlet
+  <S^2>:  0.000000
+  Dipole Moment (a.u.):   -0.0021 X     0.0014 Y     0.0332 Z
+  Trans. Moment (a.u.):   -0.0008 X     0.0044 Y     0.3484 Z
+  Strength:    0.016673
+  Amplitudes:
+[Method-specific coefficient table]
+\end{lstlisting}
+The supported state-property entries are summarized below. The labels should be written as shown, including capitalization and punctuation.
+\begin{longtable}{p{0.36\textwidth}p{0.14\textwidth}p{0.42\textwidth}}
+\rowcolor{backgray}\textbf{Entry} & \textbf{Status} & \textbf{Description}\\\hline
+\texttt{Excitation energy (eV):} & Required & Excitation energy relative to the ground state, in eV.\\
+\texttt{Total energy (a.u.):} & Optional & Electronic-state energy in Hartree, needed for diabatization.\\
+\texttt{Multiplicity:} & Optional & Spin multiplicity, such as \texttt{Singlet}, \texttt{Doublet}, or \texttt{Triplet}.\\
+\texttt{<S\textasciicircum{}2>:} & Optional & Expectation value of $\hat S^2$; an alternative way to specify spin multiplicity.\\
+\texttt{Dipole Moment (a.u.):} & Optional & State dipole moment, with Cartesian components labeled \texttt{X}, \texttt{Y}, and \texttt{Z}.\\
+\texttt{Trans. Moment (a.u.):} & Optional & Transition dipole moment, using the same Cartesian-component labels.\\
+\texttt{Strength:} & Optional & Oscillator strength.\\\hline
+\end{longtable}
+Most properties are optional and may be omitted if they are not needed for the intended calculation. The excitation energy for each state is always required. Supply spin information or other properties if available, but these information are generally not required. The spin may be specified using either \texttt{Multiplicity:} or \texttt{<S\textasciicircum{}2>:}. When both are present, they should be consistent. Write dipole and transition dipole moments as three numerical values followed respectively by \texttt{X}, \texttt{Y}, and \texttt{Z}, as in the example.
+
+\textbf{Amplitudes.} The line \texttt{Amplitudes:} marks the end of the state properties and the beginning of its wave-function coefficients. The records following this line depend on the wave-function type. Their required layout and concrete examples are given in the corresponding sections below.

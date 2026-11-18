@@ -1,0 +1,55 @@
+\section{CIS/TDA-Type Wave Functions}\label{sec-diabat-wfn-cis-tda}
+For CIS and TDA, an electronic state is expressed as a linear combination of a reference determinant and its single excitations,
+\begin{equation}
+|\Psi_I\rangle=c_{\mathrm{ref}}^{(I)}|\Phi_0\rangle+
+\sum_{\sigma=\alpha,\beta}\sum_{ia}X_{ia\sigma}^{(I)}
+|\Phi_{i_\sigma}^{a_\sigma}\rangle.
+\end{equation}
+Here, $i$ and $a$ denote occupied and virtual molecular orbitals (MOs), and $\sigma$ denotes the electron spin. The coefficient $c_{\mathrm{ref}}^{(I)}$ describes the reference configuration, while $X_{ia\sigma}^{(I)}$ gives the amplitude for exciting an electron from orbital $i$ to orbital $a$. The same file format is used for TDA-aTB wave functions.
+
+\subsection*{Complete CIS/TDA example}
+Consider a closed-shell two-electron system with one occupied and one virtual spatial orbital. The following file describes a single TDA excited state with one nonzero excitation amplitude.
+\begin{lstlisting}[style=technicalfile]
+## Wave-function data exported by Diabat
+Method: TDA
+Orbitals are not spin-polarized.
+Number of electrons: 2
+Number of alpha electrons: 1
+Number of beta electrons: 1
+Number of occupied orbitals (alpha): 1
+Number of virtual orbitals (alpha): 1
+Number of occupied orbitals (beta): 1
+Number of virtual orbitals (beta): 1
+Total energy of the reference ground state (a.u.): -1.0
+
+State Information:
+
+  State index: 1
+
+  Total energy (a.u.): -0.9
+  Excitation energy (eV): 2.7211386
+  <S^2>: 0.0
+  Amplitudes:
+  ------------------------------------------------------------
+       1   -->      2    7.071067811865475E-01  alpha
+  ------------------------------------------------------------
+\end{lstlisting}
+The example uses spin-unpolarized orbitals, so the listed alpha amplitude represents both spin channels. Its value of $1/\sqrt{2}$ gives a normalized state under the convention described below. The energies and orbital counts are illustrative and must be replaced with values consistent with the accompanying MO file.
+
+\subsection*{Excitation amplitudes}
+The file header specifies whether the orbitals are spin-polarized, the numbers of alpha and beta electrons, the numbers of occupied and virtual orbitals for each spin, and the total energy of the reference ground state. Use \texttt{Orbitals are not spin-polarized.} when both spins share the same spatial orbitals. Otherwise use \texttt{Orbitals are spin-polarized.} and provide the alpha and beta excitation amplitudes separately.
+
+Each coefficient record contains an occupied orbital index, \texttt{-->}, a virtual orbital index, a real amplitude, and the spin label \texttt{alpha} or \texttt{beta}. Orbital indices start at 1 and follow the accompanying MO file. Virtual orbitals retain their full MO indices rather than being numbered again from 1. In the example, \texttt{1 --> 2} denotes excitation from the first occupied orbital to the first virtual orbital. Only \texttt{-->} records are used for CIS and TDA.
+
+If a state contains a reference-configuration contribution, write its coefficient as
+\begin{lstlisting}[style=technicalfile]
+        Ref. config.    2.000000000000000E-02
+\end{lstlisting}
+This record belongs inside the \texttt{Amplitudes:} block. An omitted reference coefficient or excitation amplitude is taken as zero.
+
+\subsection*{Normalization}
+The coefficient norm is
+\begin{equation}
+\mathcal{N}=|c_{\mathrm{ref}}|^2+\sum_{\sigma=\alpha,\beta}\sum_{ia}|X_{ia\sigma}|^2.
+\end{equation}
+For spin-unpolarized orbitals, \progname{} stores only alpha amplitudes and counts its contribution twice. For spin-polarized orbitals, the alpha and beta amplitudes are stored and counted separately. In a \texttt{statepack} block, the reference ground state may be loaded using \texttt{state\_index = 0} without including a separate state record in the file.

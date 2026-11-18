@@ -1,0 +1,14 @@
+\chapter[Diabat Wave-Function File Formats]{Diabat Wave-Function File\\Formats}\label{app-diabat-wfn-formats}
+\progname{} can read its own text files for all supported classes of electronic-state wave functions. These files are useful when the electronic states were calculated with a quantum chemistry program for which \progname{} has no direct interface. Instead of adding a parser to \progname{}, the user can convert the calculated wave-function data to one of the formats described here.
+
+Diabat wave-function files must be used together with compatible MO files. The MO file supplies the molecular structure, AO basis, and AO-to-MO coefficients. The wave-function file supplies the method, electronic-state energies, and wave-function coefficients. Prepare both files in the same orbital representation, then specify them with \keyref{key-statepack-mofile}{mofile} and \keyref{key-statepack-statefile}{statefile} in a \texttt{statepack} block as described in Section~\ref{sec-statepack}.
+
+This appendix details the file syntax for each supported wave-function type, enabling users to prepare Diabat-compatible wave-function files themselves.
+
+% Section files are kept separate for easier maintenance.
+\input{appendices/diabat-wfn-formats/general}
+\input{appendices/diabat-wfn-formats/cis_tda}
+\input{appendices/diabat-wfn-formats/tdhf_tddft}
+\input{appendices/diabat-wfn-formats/casscf}
+\input{appendices/diabat-wfn-formats/rasci}
+\input{appendices/diabat-wfn-formats/using}

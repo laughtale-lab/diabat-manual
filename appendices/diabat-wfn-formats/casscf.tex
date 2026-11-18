@@ -1,0 +1,58 @@
+\section{CASSCF-Type Wave Functions}\label{sec-diabat-wfn-casscf}
+A CASSCF state is a linear combination of determinants within a specified active space,
+\begin{equation}
+|\Psi_I\rangle=\sum_{D\in\mathrm{CAS}}C_D^{(I)}|D\rangle.
+\end{equation}
+Orbitals outside the active space have fixed occupations. Accordingly, the state file needs the orbital-space definition and, for each state, the active-orbital occupations and their CI coefficients.
+
+\subsection*{Complete CASSCF example}
+The following example has two active orbitals and two active electrons. Both determinants have one alpha and one beta electron. The numerical values are illustrative.
+\begin{lstlisting}[style=technicalfile]
+Wave-function data exported by Diabat
+Method: CASSCF
+Number of active orbitals: 2
+Number of active electrons: 2
+Number of doubly occupied orbitals: 0
+Number of doubly virtual orbitals: 0
+Number of frozen occupied orbitals: 0
+Number of frozen virtual orbitals: 0
+Number of electrons: 2
+ID of the first doubly occupied orbital: 1
+ID of the first active orbital: 1
+ID of the first doubly virtual orbital: 3
+
+State Information:
+State index: 1
+Total energy (a.u.): -1.0
+Excitation energy (eV): 0.0
+<S^2>: 0.0
+  Amplitudes:
+ ---------------------------------
+   [20]    7.071067811865475E-01
+   [02]    7.071067811865475E-01
+ ---------------------------------
+\end{lstlisting}
+The strings \texttt{20} and \texttt{02} describe two different doubly occupied active orbitals. Their squared coefficients sum to one. The associated MO file must contain the two active orbitals in the order specified by the header.
+
+\subsection*{Occupation strings}
+A CASSCF coefficient record consists of a bracketed occupation string followed by one real coefficient. Each character describes one active \emph{spatial} orbital, in order:
+\begin{center}
+\begin{tabular}{cl}
+\hline
+Character & Occupation\\\hline
+\texttt{2} & One alpha and one beta electron\\
+\texttt{u} & One alpha electron\\
+\texttt{d} & One beta electron\\
+\texttt{0} & Empty orbital\\\hline
+\end{tabular}
+\end{center}
+For instance, \texttt{[ud]} denotes an alpha electron in the first active orbital and a beta electron in the second. Each string must have exactly as many characters as there are active orbitals. All determinants belonging to a state must have the same numbers of alpha and beta electrons. Unlisted configurations have zero coefficients.
+
+The doubly occupied and doubly virtual orbital counts describe the blocks outside the active space. The corresponding \texttt{ID of the first ... orbital} fields give their starting MO indices. Frozen-orbital counts are included as separate header fields. All counts and indices must agree with the MO file.
+
+\subsection*{Coefficient signs}
+The CASSCF representation uses the spin-orbital ordering \(\alpha_1,\beta_1,\alpha_2,\beta_2,\ldots\). If the source program instead orders all alpha orbitals before all beta orbitals, convert its determinant coefficients to this interleaved ordering. For alpha and beta occupation numbers \(n_{\alpha i}\) and \(n_{\beta i}\), the required sign is
+\begin{equation}
+(-1)^{\sum_i n_{\beta i}\sum_{j>i}n_{\alpha j}}.
+\end{equation}
+For example, \texttt{[du]} changes sign between the two ordering conventions, whereas \texttt{[ud]} does not.

@@ -1,0 +1,74 @@
+\section{RASCI-Type Wave Functions}\label{sec-diabat-wfn-rasci}
+The Diabat RASCI format represents determinants in an active space (RAS2) together with configurations obtained by moving one electron from the doubly occupied space (RAS1) into RAS2 or from RAS2 into the external virtual space (RAS3):
+\begin{equation}
+|\Psi_I\rangle=\sum_D C_D^{(I)}|D\rangle
++\sum_{hD}C_{hD}^{(I)}|h,D\rangle
++\sum_{pD}C_{pD}^{(I)}|p,D\rangle.
+\end{equation}
+The header defines the three orbital spaces. Each coefficient record then identifies the active-orbital occupations and, if applicable, the RAS1 hole or RAS3 particle orbital.
+
+\subsection*{Complete RASCI example}
+Consider four spatial orbitals. Orbital 1 belongs to RAS1, orbitals 2 and 3 belong to RAS2, and orbital 4 belongs to RAS3. The reference active space contains one alpha and one beta electron. The following file illustrates coefficients from all three sectors. The numerical values demonstrate the syntax only, not an electronic state obtained from a molecular calculation.
+\begin{lstlisting}[style=technicalfile]
+## Wave-function data exported by Diabat
+Method: RASCI
+Number of active orbitals: 2
+Number of active electrons: 2
+Number of active alpha electrons: 1
+Number of active beta electrons: 1
+Number of doubly occupied orbitals: 1
+Number of doubly virtual orbitals: 1
+Number of frozen occupied orbitals: 0
+Number of frozen virtual orbitals: 0
+Number of electrons: 4
+Number of alpha electrons: 2
+Number of beta electrons: 2
+ID of the first doubly occupied orbital: 1
+ID of the first active orbital: 2
+ID of the first doubly virtual orbital: 4
+
+State Information:
+
+  State index: 1
+
+  Total energy (a.u.): -2.0
+  Excitation energy (eV): 0.0
+  Amplitudes:
+
+ |  HOLE | ALPHA | BETA |  PART | AMPLITUDE
+ -----------------------------------------------------
+ |       | 10 | 10 |       |  8.0000000000000E-01
+ |   1   | 11 | 10 |       |  4.8000000000000E-01
+ |       | 10 | 00 |   4   |  3.6000000000000E-01
+ -----------------------------------------------------
+\end{lstlisting}
+The first coefficient belongs to the reference active space. The second has an alpha hole in RAS1 orbital 1 and one additional alpha electron in RAS2. In the third, one beta electron moves from RAS2 to RAS3 orbital 4. The squared coefficients sum to one.
+
+\subsection*{Five-field determinant records}
+A record contains five fields separated by vertical bars, as shown in the example. Their meaning is:
+\begin{center}
+\begin{tabularx}{\textwidth}{p{0.17\textwidth} X}
+\hline
+Field & Contents\\\hline
+\texttt{HOLE} & MO index of the RAS1 orbital from which an electron is removed, or blank.\\
+\texttt{ALPHA} & String of \texttt{0} and \texttt{1} giving alpha occupations of the active orbitals.\\
+\texttt{BETA} & Corresponding beta occupations.\\
+\texttt{PART} & MO index of the RAS3 orbital receiving an electron, or blank.\\
+\texttt{AMPLITUDE} & Real CI coefficient.\\\hline
+\end{tabularx}
+\end{center}
+Both occupation strings must have exactly one character per active orbital. The \texttt{HOLE} and \texttt{PART} fields are blank for an active-space determinant. Exactly one of them may contain an orbital index for a hole or particle excitation. The parser in \progname{} does not support a determinant containing a RAS1 hole and a RAS3 particle simultaneously.
+
+For a reference active space containing \(N_\alpha\) alpha and \(N_\beta\) beta electrons, the active occupation counts must follow the excitation type:
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+Determinant type & Active \(\alpha\) & Active \(\beta\)\\\hline
+Reference active space & \(N_\alpha\) & \(N_\beta\)\\
+Alpha hole excitation & \(N_\alpha+1\) & \(N_\beta\)\\
+Beta hole excitation & \(N_\alpha\) & \(N_\beta+1\)\\
+Alpha particle excitation & \(N_\alpha-1\) & \(N_\beta\)\\
+Beta particle excitation & \(N_\alpha\) & \(N_\beta-1\)\\\hline
+\end{tabular}
+\end{center}
+A \texttt{HOLE} index must lie in the doubly occupied orbital block, and a \texttt{PART} index in the external virtual block defined by the header. The strings determine whether the excitation concerns an alpha or beta electron. RASCI determinants use the spin-orbital ordering with all alpha orbitals before all beta orbitals.

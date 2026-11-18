@@ -1,0 +1,11 @@
+\section*{Using a Diabat Wave-Function File}
+Once a Diabat wave-function file has been prepared, select it in the usual \texttt{statepack} block, for example:
+\begin{lst-script}[escapechar=@]
+@\scriptnum{script-ids-one}@
+$$statepack
+    mofile = "orbitals.fchk"
+    statefile = "diabat_wavefunction_file.dat"
+    state_index = 1..3
+$$
+\end{lst-script}
+Before performing diabatization, check that the orbitals, electron counts, state energies, spin information, and any other information agree with the source calculation. It is also useful to test the file syntax and the stored data with \texttt{postwfn} before using them for diabatization.

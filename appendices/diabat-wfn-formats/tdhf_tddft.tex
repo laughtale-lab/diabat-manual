@@ -1,0 +1,54 @@
+\section{TDHF/TDDFT-Type Wave Functions}\label{sec-diabat-wfn-tdhf-tddft}
+TDHF and TDDFT states are represented by excitation amplitudes $X$ and de-excitation amplitudes $Y$. In the occupied--virtual MO basis, the transition-density representation used by \progname{} has the form
+\begin{equation}
+\mathbf{D}^{(I)}_\sigma=
+\begin{pmatrix}
+\mathbf{0} & \mathbf{X}^{(I)}_\sigma\\
+(\mathbf{Y}^{(I)}_\sigma)^{\mathsf T} & \mathbf{0}
+\end{pmatrix}.
+\end{equation}
+Both sets of amplitudes are stored in the wave-function file. Unlike the excitation amplitudes of CIS and TDA, the $Y$ amplitudes are part of the linear-response description and are not ordinary CI coefficients.
+
+\subsection*{Complete TDHF/TDDFT example}
+Consider a closed-shell two-electron system with one occupied and one virtual spatial orbital. The following file contains a TDDFT excited state with one excitation amplitude and one de-excitation amplitude.
+\begin{lstlisting}[style=technicalfile]
+## Wave-function data exported by Diabat
+Method: TDDFT
+Orbitals are not spin-polarized.
+Number of electrons: 2
+Number of alpha electrons: 1
+Number of beta electrons: 1
+Number of occupied orbitals (alpha): 1
+Number of virtual orbitals (alpha): 1
+Number of occupied orbitals (beta): 1
+Number of virtual orbitals (beta): 1
+Total energy of the reference ground state (a.u.): -1.0
+
+State Information:
+
+  State index: 1
+
+  Total energy (a.u.): -0.9
+  Excitation energy (eV): 2.7211386
+  <S^2>: 0.0
+  Amplitudes:
+  ------------------------------------------------------------
+       1   -->      2    7.500000000000000E-01  alpha
+       1   <--      2    2.500000000000000E-01  alpha
+  ------------------------------------------------------------
+\end{lstlisting}
+The two records refer to the same occupied--virtual orbital pair. The first gives its $X$ amplitude and the second its $Y$ amplitude. The chosen values satisfy the TDHF/TDDFT normalization condition. The energies are illustrative.
+
+\subsection*{Excitation and de-excitation amplitudes}
+The header uses the same electron counts, orbital counts, reference energy, and spin-polarization statement as the CIS/TDA format. Each amplitude record specifies an occupied orbital, a virtual orbital, a coefficient, and a spin label. The marker \texttt{-->} denotes an $X$ amplitude, whereas \texttt{<--} denotes a $Y$ amplitude. The occupied and virtual indices follow the ordering of the accompanying MO file, with virtual orbitals retaining their full MO indices.
+
+For spin-unpolarized orbitals, list the amplitudes once using the \texttt{alpha} label. For spin-polarized orbitals, provide the relevant \texttt{alpha} and \texttt{beta} amplitudes separately. The optional reference-configuration coefficient is written using \texttt{Ref. config.} followed by its value, as in the preceding section. Amplitudes that are not listed are taken as zero.
+
+\subsection*{Normalization}
+The TDHF/TDDFT normalization condition differs from that of CIS and TDA because the $Y$ amplitudes contribute with a negative sign,
+\begin{equation}
+\mathcal{N}=|c_{\mathrm{ref}}|^2+
+\sum_{\sigma=\alpha,\beta}\sum_{ia}
+\left(|X_{ia\sigma}|^2-|Y_{ia\sigma}|^2\right).
+\end{equation}
+For spin-unpolarized orbitals, the single stored spin channel contributes twice. Thus, the amplitudes in the example give $\mathcal{N}=2(0.75^2-0.25^2)=1$. For spin-polarized orbitals, the two channels are counted separately. In a \texttt{statepack} block, the reference ground state may be loaded using \texttt{state\_index = 0} without including a separate state record in the file.
